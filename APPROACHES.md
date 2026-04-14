@@ -297,13 +297,12 @@ Worth testing early, but unlikely to solve the whole problem alone.
 
 ## Phase 1: establish ground truth
 
-Before comparing methods, create a trusted answer key for rows 1-45 by manual inspection.
+A trusted answer key for rows 1-45 is already available in `ground_truth.json`.
 
-Recommended outputs:
-- `ground_truth.json`
+Recommended complementary outputs:
 - annotated debug image with row numbers and chosen option
 
-Without this, “90% reliability” cannot be proven.
+This means the project can directly benchmark candidate methods instead of first creating the ground truth.
 
 ## Phase 2: implement the best 3 candidate families
 

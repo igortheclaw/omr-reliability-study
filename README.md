@@ -8,6 +8,7 @@ Small isolated project to evaluate ways to recognize filled answer boxes from a 
 - `APPROACHES.md` — possible solution paths
 - `TASK.md` — proposed experiment plan
 - `ground_truth.template.json` — template for trusted manual answers
+- `ground_truth.json` — provided trusted answer set for rows 1-45
 
 ## Problem
 
@@ -29,7 +30,7 @@ Find an approach that is:
 
 ## Suggested workflow
 
-1. Build trusted ground truth for rows 1-45
+1. Use the provided trusted ground truth for rows 1-45
 2. Implement one baseline reader
 3. Benchmark against ground truth
 4. Add perturbation tests

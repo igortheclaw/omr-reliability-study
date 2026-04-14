@@ -19,11 +19,13 @@ A proposed method is only acceptable if it can be demonstrated to reach:
 
 ## Phase 1 — Ground truth
 
-Create a trusted manual answer file for rows 1-45.
+A trusted manual answer file for rows 1-45 is already provided.
 
-Deliverables:
+Available artifact:
 - `ground_truth.json`
-- optional annotated image showing row number and selected option
+
+Optional follow-up artifacts:
+- annotated image showing row number and selected option
 
 Possible first helper steps (not implemented yet):
 - render `sample.pdf` to PNG at one or more fixed DPI values
