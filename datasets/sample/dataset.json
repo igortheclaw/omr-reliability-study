@@ -1,0 +1,15 @@
+{
+  "dataset_id": "sample",
+  "pdf_filename": "sample.pdf",
+  "pdf_path": "sample.pdf",
+  "rows_used": 45,
+  "allowed_values": [
+    "A",
+    "B",
+    "C",
+    "D",
+    null
+  ],
+  "status": "pending_ground_truth",
+  "notes": "Fill ground_truth.json with trusted answers for rows 1-45."
+}

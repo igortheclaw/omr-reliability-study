@@ -1,0 +1,15 @@
+{
+  "dataset_id": "2024_2-SOL_PER_modelo_A",
+  "pdf_filename": "2024_2-SOL_PER_modelo_A.pdf",
+  "pdf_path": "datasets/2024_2-SOL_PER_modelo_A.pdf",
+  "rows_used": 45,
+  "allowed_values": [
+    "A",
+    "B",
+    "C",
+    "D",
+    null
+  ],
+  "status": "pending_ground_truth",
+  "notes": "Fill ground_truth.json with trusted answers for rows 1-45."
+}

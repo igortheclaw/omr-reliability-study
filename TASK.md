@@ -27,12 +27,13 @@ Current benchmarked dataset:
 - rows 1-45
 - ground truth in `ground_truth.json`
 
-Additional PDFs already added to the repo for the next phase:
-- `datasets/2021_2P_PER_modelo_B_definitiva4.pdf`
-- `datasets/2022_3P_PER_modelo_A.pdf`
-- `datasets/2023_1P_PER_modelo_B.pdf`
-- `datasets/2024_2-SOL_PER_modelo_A.pdf`
-- `datasets/2026_1-SOL_PER_modelo_A.pdf`
+Additional datasets already scaffolded for the next phase:
+- `datasets/sample/`
+- `datasets/2021_2P_PER_modelo_B_definitiva4/`
+- `datasets/2022_3P_PER_modelo_A/`
+- `datasets/2023_1P_PER_modelo_B/`
+- `datasets/2024_2-SOL_PER_modelo_A/`
+- `datasets/2026_1-SOL_PER_modelo_A/`
 
 ## Current benchmark
 
@@ -67,6 +68,7 @@ When new PDFs are added, the repo should support:
 ## Standard of success
 
 The repo is in good shape when a new PDF can be added as a new benchmark case with minimal glue code, and the main user experience remains:
-- define dataset
+- define dataset directory
+- fill `ground_truth.json`
 - run benchmark
 - compare approaches

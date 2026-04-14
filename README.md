@@ -52,12 +52,13 @@ Current benchmark case:
 - `ground_truth.json`
 - `ground_truth.template.json`
 
-Additional PDFs for future benchmark cases:
-- `datasets/2021_2P_PER_modelo_B_definitiva4.pdf`
-- `datasets/2022_3P_PER_modelo_A.pdf`
-- `datasets/2023_1P_PER_modelo_B.pdf`
-- `datasets/2024_2-SOL_PER_modelo_A.pdf`
-- `datasets/2026_1-SOL_PER_modelo_A.pdf`
+Prepared dataset directories:
+- `datasets/sample/`
+- `datasets/2021_2P_PER_modelo_B_definitiva4/`
+- `datasets/2022_3P_PER_modelo_A/`
+- `datasets/2023_1P_PER_modelo_B/`
+- `datasets/2024_2-SOL_PER_modelo_A/`
+- `datasets/2026_1-SOL_PER_modelo_A/`
 
 ### Reports
 
@@ -127,13 +128,14 @@ python3 run_legacy_baseline.py
 
 ## Direction for the next phase
 
-This repo should grow by **wiring the added PDFs into the shared benchmark and evaluating the same approach families on all of them**.
+This repo should grow by **wiring the prepared dataset directories into the shared benchmark and evaluating the same approach families on all of them**.
 
 That means future cleanup and development should bias toward:
 - dataset-oriented organization
 - reusable benchmark entrypoints
 - per-dataset results
 - honest cross-approach comparison
+- manual ground-truth completion without changing code structure
 
 ## Non-goal
 
