@@ -1,69 +1,43 @@
 # Benchmark report
 
-## Baseline tested
+## Command run
 
-Manual calibration plus deterministic cell darkness reading on a fixed 200 DPI render of `sample.pdf`.
+```bash
+python3 benchmark_all.py
+```
 
-## Calibration
+## Results
 
-Two visible answer groups were calibrated independently:
+| Approach | Exact matches | Wrong | NULL | Accuracy | Accepted precision | Accepted coverage |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Approach 1, manual calibration baseline | 44 | 0 | 1 | 0.9778 | 1.0000 | 0.9778 |
+| Approach 2, fixed-template registration + intensity reading | 44 | 0 | 1 | 0.9778 | 1.0000 | 0.9778 |
+| Approach 3, timing-mark anchored registration | 45 | 0 | 0 | 1.0000 | 1.0000 | 1.0000 |
 
-- Rows 1-25
-- Rows 26-45
+## Failure details
 
-For each row, the method samples four circular regions centered on the A/B/C/D bubbles and computes darkness as `255 - mean_intensity`.
+### Approach 1
+- row 35 -> predicted `NULL`, truth `A`
 
-Decision rule:
-- choose the darkest option
-- return `NULL` if the margin over the second darkest option is below `10.0`
+### Approach 2
+- row 35 -> predicted `NULL`, truth `A`
 
-Parameters:
-- render DPI: 200
-- sample radius: 11 px
-- row spacing: 34 px
+### Approach 3
+- no failures on rows 1-45 for the provided sample
 
-## Result against trusted ground truth
+## Interpretation
 
-- Exact matches: **44 / 45**
-- Wrong answers: **0 / 45**
-- `NULL`: **1 / 45**
-- Accuracy: **97.78%**
-- Accepted precision: **100%**
-- Accepted coverage: **97.78%**
+- The original baseline remains strong and conservative.
+- The template-registration variant is honest but neutral on this already aligned page.
+- The timing-mark method is the strongest observed deterministic approach in this repo because it fixes the row alignment drift that left row 35 ambiguous in the baseline family.
 
-## Failure analysis
+## Artifacts
 
-Only one row was rejected:
-
-- Row 35
-  - Ground truth: `A`
-  - Predicted: `NULL`
-  - Best-vs-second margin: `7.28`
-
-This is acceptable under the project preference that `NULL` is better than a wrong answer.
-
-## Current assessment
-
-This baseline already clears the stated success condition.
-
-Strengths:
-- simple
-- auditable
-- deterministic
-- no wrong accepted answers on rows 1-45
-
-Weaknesses:
-- currently calibrated to one fixed render geometry
-- not yet tested against perturbations
-- row 35 is borderline and should be inspected in robustness tests
-
-## Recommended next steps
-
-1. Refactor the baseline into a reusable CLI with configurable calibration.
-2. Add perturbation tests:
-   - different DPI
-   - small rotation
-   - brightness/contrast changes
-   - tiny crop shifts
-3. Add optional local registration so calibration survives small image drift.
-4. Produce a final recommendation after robustness testing.
+Generated under `out/`:
+- `approach_1_baseline_results.json`
+- `approach_1_baseline_overlay.png`
+- `approach_2_template_registration_results.json`
+- `approach_2_template_registration_overlay.png`
+- `approach_3_timing_marks_results.json`
+- `approach_3_timing_marks_overlay.png`
+- `benchmark_summary.json`

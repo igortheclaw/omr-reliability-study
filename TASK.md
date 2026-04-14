@@ -2,65 +2,52 @@
 
 ## Objective
 
-Determine the most reliable way to read the filled answer boxes in `sample.pdf` for rows **1-45** only.
+Turn this repo from a single working extractor into a small but real comparative OMR study for rows **1-45** of `sample.pdf`.
 
-## Success condition
+## Done
 
-A method is acceptable if it demonstrates either:
-- **>90% exact accuracy**, or
-- very high precision with `NULL` for ambiguous rows
+Completed work:
+- kept the original manual baseline as **approach 1**
+- implemented **approach 2**: fixed-template registration + intensity reading
+- implemented **approach 3**: timing-mark anchored registration
+- added a shared benchmark runner for all approaches
+- saved per-approach overlays and JSON outputs under `out/`
+- updated the docs to report a comparison instead of only the first success
 
-## Current status
+## Benchmark status
 
-Phase 1 through Phase 3 have a working first pass.
+Current observed benchmark on the provided page:
 
-Implemented baseline:
-- manual calibration
-- fixed 200 DPI render
-- deterministic cell darkness reading
-- `NULL` when confidence margin is too small
+| Approach | Exact | Wrong | NULL | Accuracy |
+| --- | ---: | ---: | ---: | ---: |
+| Approach 1, baseline | 44/45 | 0 | 1 | 97.78% |
+| Approach 2, template registration | 44/45 | 0 | 1 | 97.78% |
+| Approach 3, timing marks | 45/45 | 0 | 0 | 100.00% |
 
-Current benchmark result:
-- **44/45 exact matches**
-- **0 wrong answers**
-- **1 NULL**
-- **97.78% exact accuracy**
-- **100% accepted precision**
+## Current recommendation
 
-Known borderline row:
-- row 35, currently returned as `NULL`
+Best observed deterministic method on the provided sample:
+- **Approach 3, timing-mark anchored registration**
 
-## Remaining work
+Reason:
+- it preserves the same transparent intensity scoring
+- it replaces manually stepped row Y positions with detected structural anchors
+- it resolves the baseline's lone ambiguous row on the current sample
 
-### Phase 4 — Robustness tests
+## Remaining optional work
 
-Test the current baseline against small perturbations:
-- different DPI renders
-- tiny rotation
-- brightness/contrast changes
-- slight crop shifts
-- blur/noise
+Useful next steps if the study is expanded:
+- perturbation tests across DPI, rotation, crop shift, blur, and contrast changes
+- multiple-page evaluation if more sheets become available
+- hybrid registration combining coarse page alignment with timing-mark correction
 
-A method that collapses under minor perturbations is not acceptable.
+## Deliverables now present
 
-### Phase 5 — Final recommendation
-
-Document:
-- whether the current baseline remains above threshold under perturbation
-- whether a lightweight registration step is necessary
-- remaining failure modes
-- whether the method is safe for production use
-
-## Deliverables
-
-Already available:
-- `ground_truth.json`
-- `omr_baseline.py`
-- `out/baseline_overlay.png`
-- `out/baseline_results.json`
-- `benchmark_report.md`
-
-Still desirable:
-- robustness test harness
-- final recommendation report
-- optional calibration/registration abstraction
+- `omr_core.py`
+- `omr_approaches.py`
+- `benchmark_all.py`
+- updated `omr_baseline.py`
+- updated `README.md`
+- updated `APPROACHES.md`
+- updated `benchmark_report.md`
+- generated benchmark artifacts in `out/`

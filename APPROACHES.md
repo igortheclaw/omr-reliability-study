@@ -1,108 +1,91 @@
-# OMR reliability study for a single answer sheet
+# Comparative OMR approaches for this sheet
 
-## Objective
+## Goal
 
-Recognize the filled answer boxes in `sample.pdf` for rows 1-45 with reliability above 90%.
+Evaluate multiple deterministic ways to read rows 1-45 from `sample.pdf`, using the same ground truth and comparable metrics.
 
-## What we learned so far
+## Implemented approaches
 
-The simplest useful approach already works well:
-- manual calibration
-- fixed render geometry
-- deterministic darkness measurement per answer cell
-- `NULL` on low-margin cases
+### 1. Manual calibration baseline
 
-Current observed result on the provided sample:
-- 44/45 exact matches
-- 0 wrong answers
-- 1 `NULL`
-- 97.78% exact accuracy
+Method:
+- keep the original hand-tuned bubble centers for the two visible answer groups
+- measure mean darkness inside a circular patch at each A/B/C/D location
+- pick the darkest option
+- return `NULL` when the top two scores are too close
 
-So the main question is no longer "can this work?" but "how much geometry hardening is needed to make it robust?"
+Why it matters:
+- simplest and easiest to audit
+- serves as the control for the rest of the study
 
-## Candidate method families
-
-### 1. Manual calibration + deterministic extractor
-
-Use fixed coordinates for the two visible answer groups and measure darkness at the expected bubble centers.
-
-Pros:
-- simplest implementation
-- highly auditable
-- already clears the success threshold on the provided sample
-
-Cons:
-- tied to one render geometry unless registration is added
-
-Status:
-- **implemented**
-- currently the leading approach
+Observed result:
+- **44/45 exact**
+- **0 wrong**
+- **1 NULL**
+- borderline row: **35**
 
 ### 2. Fixed-template registration + intensity reading
 
-Register the page to a canonical template, then read cells using known coordinates.
+Method:
+- treat the current page layout as a canonical template
+- run affine ECC registration on the answer-region crop
+- transform the expected bubble coordinates through the estimated warp
+- read bubble darkness at the registered positions
+- use the same margin rule as approach 1
 
-Pros:
-- natural next step from the current baseline
-- keeps the same auditable measurement logic
-- likely improves tolerance to small drift
+Why it matters:
+- same transparent readout logic as the baseline
+- introduces an explicit geometric normalization stage
+- useful as the natural next hardening step for small drift
 
-Cons:
-- more implementation complexity than pure fixed calibration
+Observed result:
+- **44/45 exact**
+- **0 wrong**
+- **1 NULL**
+- same borderline row: **35**
 
-Status:
-- not yet implemented
-- strongest next hardening step
+Interpretation:
+- on this already well-aligned sample, template registration does not materially change the result
+- it still documents the registration-based family honestly and reproducibly
 
-### 3. Timing-mark-based registration
+### 3. Timing-mark anchored registration
 
-Use the right-side OMR timing marks to infer row alignment and refine cell positions.
+Method:
+- threshold the page and detect the repeated right-edge timing marks as connected components
+- sort them vertically and use the visible sequence as the row anchor set
+- map each scored row onto its detected timing mark Y coordinate
+- keep fixed X coordinates for the A/B/C/D bubbles within each answer group
+- read bubble darkness using the same deterministic scorer
 
-Pros:
-- uses form structure intended for machine reading
-- potentially robust to small geometric variation
+Why it matters:
+- uses structural features that are actually designed for machine reading
+- reduces dependence on hand-entered row Y coordinates
+- stays simple and auditable
 
-Cons:
-- requires reliable timing-mark detection
-- more work than the current baseline
+Observed result:
+- **45/45 exact**
+- **0 wrong**
+- **0 NULL**
 
-Status:
-- not yet implemented
-- good second hardening path if template registration is not enough
+Interpretation:
+- on the provided page, the timing marks correct the slight Y offset that made row 35 ambiguous for the baseline family
+- this is the best observed method in the repo right now
 
-### 4. Hybrid registration
+## Shared evaluation policy
 
-Use coarse template registration plus local timing-mark correction.
+All approaches are benchmarked the same way:
+- same rendered page
+- same ground truth
+- same answer vocabulary
+- same metrics: exact matches, wrong, NULL, accuracy, accepted precision, accepted coverage
 
-Pros:
-- likely the strongest classical CV option
-- good safety upgrade if perturbation tests expose drift sensitivity
+## Recommendation from the current evidence
 
-Cons:
-- more engineering overhead
+For this specific sample:
+1. keep approach 1 as the clean control baseline
+2. keep approach 2 as the registration-family comparator
+3. prefer approach 3 as the best observed deterministic method
 
-Status:
-- not yet implemented
-- probably unnecessary unless robustness tests fail
-
-### 5. Other exploratory methods
-
-These remain lower priority:
-- contour/component-based OMR
-- blob/circle detection
-- learned cell classifier
-- vision model reading
-- multi-method consensus
-
-They may be useful later, but the current evidence suggests the fixed-coordinate family is the right starting point.
-
-## Recommendation
-
-Recommended order from here:
-
-1. keep the current deterministic extractor as the baseline
-2. run perturbation tests
-3. add lightweight registration only if perturbations expose instability
-4. consider hybrid methods only if registration alone is not enough
-
-I would not lead with ML or vision-model methods here. This problem is narrow, structured, and already yielding to a simpler, more auditable approach.
+Important caveat:
+- this repo still benchmarks one provided form only
+- stronger claims would require perturbation tests or more pages

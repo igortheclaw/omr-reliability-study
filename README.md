@@ -1,85 +1,84 @@
 # OMR Reliability Study
 
-Small isolated project to evaluate how reliably we can read filled answer boxes from a single OMR-style PDF page.
+Small deterministic CV study for reading the filled answer bubbles on `sample.pdf`.
 
 ## Scope
 
-This project is intentionally narrow.
+This repo stays intentionally narrow.
 
-- Only one page family is in scope: `sample.pdf`
-- Only rows **1-45** matter
+- One page family: `sample.pdf`
+- Only rows **1-45** are benchmarked
 - Valid outputs are `A`, `B`, `C`, `D`, or `NULL`
-- `NULL` is preferred over a wrong answer
+- `NULL` is preferable to a wrong answer
 
-The sheet contains 100 numbered rows, but rows 46-100 are out of scope.
+The sheet contains 100 numbered rows, but rows 46-100 are out of scope for this study.
 
-## Goal
+## What this repo does now
 
-Identify a method that is:
-- reproducible
-- auditable
-- robust
-- above 90% reliability on rows 1-45
+This is now a **comparative OMR study**, not just a single working baseline.
 
-## Current result
+Implemented approaches:
 
-A first deterministic baseline is implemented in `omr_baseline.py`.
+1. **Approach 1, manual calibration baseline**
+   - fixed bubble coordinates
+   - direct intensity reading at bubble centers
+   - `NULL` on low best-vs-second-best margin
+2. **Approach 2, fixed-template registration + intensity reading**
+   - affine ECC registration to a canonical layout
+   - then the same deterministic bubble readout
+3. **Approach 3, timing-mark anchored registration**
+   - detect the right-edge timing marks
+   - use them as row anchors
+   - then read the fixed answer columns
 
-Benchmark on the provided `sample.pdf`:
-- **44 / 45 exact matches**
-- **0 wrong answers**
-- **1 `NULL`**
-- **97.78% exact accuracy**
-- **100% precision on accepted answers**
+## Observed benchmark on the provided sample
 
-This already clears the project success threshold.
+From `python3 benchmark_all.py`:
 
-## Method in use
+| Approach | Exact | Wrong | NULL | Accuracy | Accepted precision | Coverage |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Approach 1, baseline | 44/45 | 0 | 1 | 97.78% | 100.00% | 97.78% |
+| Approach 2, template registration | 44/45 | 0 | 1 | 97.78% | 100.00% | 97.78% |
+| Approach 3, timing marks | 45/45 | 0 | 0 | 100.00% | 100.00% | 100.00% |
 
-Current baseline:
-- render `sample.pdf` at 200 DPI
-- use manual calibration for the two visible answer groups
-- sample darkness at the A/B/C/D bubble centers for each row
-- pick the darkest option
-- emit `NULL` if the best-vs-second-best margin is too small
+Best observed result on the provided page: **Approach 3**.
 
-The current implementation is deterministic and easy to inspect.
+## Repository layout
 
-## Repository contents
+Inputs:
+- `sample.pdf`
+- `ground_truth.json`
+- `ground_truth.template.json`
 
-Core inputs:
-- `sample.pdf` — target document
-- `ground_truth.json` — trusted answers for rows 1-45
-- `ground_truth.template.json` — template for manual answer files
-
-Core implementation:
-- `omr_baseline.py` — current baseline extractor and benchmark runner
+Implementation:
+- `omr_core.py` - shared geometry, scoring, evaluation, and artifact helpers
+- `omr_approaches.py` - all implemented approaches
+- `omr_baseline.py` - compatibility entrypoint for approach 1 only
+- `benchmark_all.py` - common comparative benchmark runner
 
 Documentation:
-- `TASK.md` — current project status and next steps
-- `APPROACHES.md` — candidate method families and recommendation
-- `benchmark_report.md` — current benchmark summary
+- `TASK.md`
+- `APPROACHES.md`
+- `benchmark_report.md`
 
-Generated artifacts:
-- `out/page-1.png` — 200 DPI render used by the baseline
-- `out/baseline_overlay.png` — debug overlay showing sampled cells
-- `out/baseline_results.json` — predictions, scores, and metrics
+Generated artifacts in `out/`:
+- `page-1.png`
+- per-approach overlays and result JSON files
+- `benchmark_summary.json`
 
 ## How to run
 
-From the repo root:
+Render the page if needed, then run either the baseline or the full comparison.
 
 ```bash
 mkdir -p out
 pdftoppm -png -r 200 sample.pdf out/page
 python3 omr_baseline.py
+python3 benchmark_all.py
 ```
 
-## Current assessment
+## Notes
 
-The baseline is already good enough to count as a viable solution for the provided sample.
-
-What remains before calling it production-safe:
-- robustness testing under small perturbations
-- optional lightweight registration so the calibration survives minor geometric drift
-- cleanup into a more reusable CLI or module shape
+- The methods here are deliberately simple, deterministic, and auditable.
+- No ML classifier is used.
+- The benchmark results are only for the provided `sample.pdf`; they are not a claim of production robustness on unseen forms.

@@ -1,7 +1,7 @@
 {
-  "approach_id": "approach_1_baseline",
-  "name": "Approach 1, manual calibration baseline",
-  "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+  "approach_id": "approach_2_template_registration",
+  "name": "Approach 2, fixed-template registration + intensity reading",
+  "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
   "answers": {
     "1": "B",
     "2": "B",
@@ -923,6 +923,18 @@
       }
     ],
     "null_margin": 10.0,
-    "radius": 11
+    "radius": 11,
+    "warp_matrix": [
+      [
+        1.0,
+        -1.0076681242893182e-12,
+        3.4306168572584284e-08
+      ],
+      [
+        1.8784357749823677e-12,
+        1.0,
+        4.088056471118762e-08
+      ]
+    ]
   }
 }
