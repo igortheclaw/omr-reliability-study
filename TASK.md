@@ -22,10 +22,17 @@ Shared core logic:
 - `omr_core.py`
 - `omr_approaches.py`
 
-Current evaluated dataset:
+Current benchmarked dataset:
 - `sample.pdf`
 - rows 1-45
 - ground truth in `ground_truth.json`
+
+Additional PDFs already added to the repo for the next phase:
+- `datasets/2021_2P_PER_modelo_B_definitiva4.pdf`
+- `datasets/2022_3P_PER_modelo_A.pdf`
+- `datasets/2023_1P_PER_modelo_B.pdf`
+- `datasets/2024_2-SOL_PER_modelo_A.pdf`
+- `datasets/2026_1-SOL_PER_modelo_A.pdf`
 
 ## Current benchmark
 

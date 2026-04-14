@@ -6,14 +6,16 @@ Comparative study of deterministic OMR-reading approaches for a growing set of P
 
 The main goal of this repository is to **compare candidate approaches**, not just to keep a single working extractor.
 
-Today the repo contains one evaluated sheet. In the next phase, more PDFs can be added and benchmarked with the same approach framework.
+The repo already contains multiple PDFs and is being prepared to benchmark them with the same approach framework.
 
 ## Scope today
 
-Current evaluated dataset:
+Currently benchmarked dataset:
 - `sample.pdf`
 - rows **1-45** only
 - valid outputs: `A`, `B`, `C`, `D`, or `NULL`
+
+Additional PDFs already added for the next phase live under `datasets/`.
 
 `NULL` is preferred over a wrong answer.
 
@@ -45,9 +47,17 @@ Current evaluated dataset:
 
 ### Dataset inputs
 
+Current benchmark case:
 - `sample.pdf`
 - `ground_truth.json`
 - `ground_truth.template.json`
+
+Additional PDFs for future benchmark cases:
+- `datasets/2021_2P_PER_modelo_B_definitiva4.pdf`
+- `datasets/2022_3P_PER_modelo_A.pdf`
+- `datasets/2023_1P_PER_modelo_B.pdf`
+- `datasets/2024_2-SOL_PER_modelo_A.pdf`
+- `datasets/2026_1-SOL_PER_modelo_A.pdf`
 
 ### Reports
 
@@ -85,6 +95,7 @@ Best observed approach on the current dataset: **Approach 3**.
 ├── benchmark_all.py
 ├── run_legacy_baseline.py
 ├── omr_baseline.py
+├── datasets/
 ├── README.md
 ├── APPROACHES.md
 ├── TASK.md
@@ -116,7 +127,7 @@ python3 run_legacy_baseline.py
 
 ## Direction for the next phase
 
-This repo should grow by **adding more PDFs and evaluating the same approach families on all of them**.
+This repo should grow by **wiring the added PDFs into the shared benchmark and evaluating the same approach families on all of them**.
 
 That means future cleanup and development should bias toward:
 - dataset-oriented organization

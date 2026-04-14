@@ -9,6 +9,8 @@ Dataset currently evaluated:
 - rows 1-45
 - ground truth from `ground_truth.json`
 
+Additional PDFs are already present under `datasets/` for future benchmark expansion, but they are not yet benchmarked in this report.
+
 ## Command run
 
 ```bash
