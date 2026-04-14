@@ -2,361 +2,107 @@
 
 ## Objective
 
-Recognize the **filled answer boxes with >90% reliability** from this single PDF:
+Recognize the filled answer boxes in `sample.pdf` for rows 1-45 with reliability above 90%.
 
-- `sample.pdf`
-- Source URL: <https://www.juntadeandalucia.es/sites/default/files/inline-files/2025/11/2025_3-SOL_PER_modelo_A.pdf>
+## What we learned so far
 
-## Scope
+The simplest useful approach already works well:
+- manual calibration
+- fixed render geometry
+- deterministic darkness measurement per answer cell
+- `NULL` on low-margin cases
 
-This project is intentionally narrow.
+Current observed result on the provided sample:
+- 44/45 exact matches
+- 0 wrong answers
+- 1 `NULL`
+- 97.78% exact accuracy
 
-- Only **one page / one PDF** is in scope.
-- Only the **first 45 question numbers** matter.
-- The sheet contains **100 numbered rows**, but rows 46-100 must be ignored.
-- The right-side **OMR timing/alignment marks** are part of the problem and may help registration.
-- This project does **not** depend on or reference any previous exam/question database project.
-- We only care about **reading filled boxes reliably**.
+So the main question is no longer "can this work?" but "how much geometry hardening is needed to make it robust?"
 
-## Success criteria
+## Candidate method families
 
-A solution is acceptable only if it can be shown to reach at least one of these:
+### 1. Manual calibration + deterministic extractor
 
-- **>90% exact accuracy** on the 45 answers, measured against a trusted ground truth
-- or **very high precision** with blanks/`unknown` for ambiguous rows, if the accepted rows still meet the reliability target
+Use fixed coordinates for the two visible answer groups and measure darkness at the expected bubble centers.
 
-Preferred outcome:
+Pros:
+- simplest implementation
+- highly auditable
+- already clears the success threshold on the provided sample
 
-- `A/B/C/D/NULL` per row 1-45
-- with a per-row confidence score
-- with reproducible debug artifacts
+Cons:
+- tied to one render geometry unless registration is added
 
-## Constraints and observations
+Status:
+- **implemented**
+- currently the leading approach
 
-- This is a printed OMR sheet, not a born-digital form field PDF.
-- The page includes alignment/timing marks on the right margin.
-- The layout likely supports more rows than the exam actually uses.
-- The real task is not generic OCR, but **robust mark detection on a fixed layout**.
-- A low-confidence answer is not acceptable as a final output.
-- `NULL` is better than a wrong answer.
+### 2. Fixed-template registration + intensity reading
 
----
+Register the page to a canonical template, then read cells using known coordinates.
 
-# Possible solution paths
+Pros:
+- natural next step from the current baseline
+- keeps the same auditable measurement logic
+- likely improves tolerance to small drift
 
-## 1. Fixed-template image registration + cell intensity reading
+Cons:
+- more implementation complexity than pure fixed calibration
 
-### Idea
-Choose one canonical rendering of the PDF, detect the page boundary, register every test rendering to a fixed template, and read only the 45 x 4 answer cells using known coordinates.
+Status:
+- not yet implemented
+- strongest next hardening step
 
-### How it works
-- Render PDF to PNG at fixed DPI
-- Detect page contour and deskew
-- Register image to a template using affine or perspective transform
-- Define exact bounding boxes for rows 1-45 and columns A-D
-- Measure darkness/fill level in each box
-- Select the darkest cell if separation is above threshold, else `NULL`
+### 3. Timing-mark-based registration
 
-### Pros
-- Most appropriate for a **single known form**
-- Highly auditable
-- Easy to debug visually
-- Alignment marks can improve registration
+Use the right-side OMR timing marks to infer row alignment and refine cell positions.
 
-### Cons
-- Needs precise calibration once
-- Sensitive to bad registration if not done carefully
+Pros:
+- uses form structure intended for machine reading
+- potentially robust to small geometric variation
 
-### Expected reliability
-Very promising. This is probably the strongest baseline.
+Cons:
+- requires reliable timing-mark detection
+- more work than the current baseline
 
----
+Status:
+- not yet implemented
+- good second hardening path if template registration is not enough
 
-## 2. Registration using the right-side OMR timing marks
+### 4. Hybrid registration
 
-### Idea
-Use the right-side OMR marks as the primary geometric reference system, instead of relying on full-page contour or generic feature matching.
+Use coarse template registration plus local timing-mark correction.
 
-### How it works
-- Detect the vertical sequence of timing marks on the right margin
-- Use their spacing and positions to infer scale, skew, and row alignment
-- Reconstruct the expected y-position of rows 1-45
-- Read answer cells relative to that recovered grid
+Pros:
+- likely the strongest classical CV option
+- good safety upgrade if perturbation tests expose drift sensitivity
 
-### Pros
-- Uses structure already designed for machine reading
-- More robust than generic circle detection
-- Good against slight scale/rotation drift
+Cons:
+- more engineering overhead
 
-### Cons
-- Requires reliable detection of all or most timing marks
-- If marks are faint or partially cropped, registration can fail
+Status:
+- not yet implemented
+- probably unnecessary unless robustness tests fail
 
-### Expected reliability
-Excellent if the timing marks are clean and stable.
+### 5. Other exploratory methods
 
----
+These remain lower priority:
+- contour/component-based OMR
+- blob/circle detection
+- learned cell classifier
+- vision model reading
+- multi-method consensus
 
-## 3. Hybrid approach: template registration + timing-mark correction
+They may be useful later, but the current evidence suggests the fixed-coordinate family is the right starting point.
 
-### Idea
-Combine a coarse page/template alignment with a local correction driven by timing marks.
+## Recommendation
 
-### How it works
-- First align the sheet globally to a template
-- Then refine row positions using the right-side marks
-- Finally read answer boxes from corrected local coordinates
+Recommended order from here:
 
-### Pros
-- Likely more robust than either method alone
-- Good if scan/render introduces local distortions
+1. keep the current deterministic extractor as the baseline
+2. run perturbation tests
+3. add lightweight registration only if perturbations expose instability
+4. consider hybrid methods only if registration alone is not enough
 
-### Cons
-- More implementation complexity
-- Harder to tune initially
-
-### Expected reliability
-Potentially the best engineering option.
-
----
-
-## 4. Classical OMR by connected components / contours
-
-### Idea
-Binarize the page, detect the answer boxes or filled regions directly as connected components, then infer which option is marked in each row.
-
-### How it works
-- Threshold image
-- Find contours/components for boxes and marks
-- Cluster into rows and columns
-- Determine selected option by fill ratio
-
-### Pros
-- No ML required
-- Fully local and explainable
-
-### Cons
-- Often brittle when print artifacts or line noise exist
-- Can mistake borders/labels for marks
-- Harder when layout contains many non-answer elements
-
-### Expected reliability
-Useful as a baseline, but probably not best alone.
-
----
-
-## 5. Hough/circle or blob detection for bubble-like marks
-
-### Idea
-Detect circular or blob-like marked areas corresponding to candidate answers.
-
-### How it works
-- Use HoughCircles, LoG/DoG blob detection, or similar
-- Cluster detections into 45 rows and 4 columns
-- Infer chosen answer from strongest blob
-
-### Pros
-- Works if the marks are circular and high contrast
-- Fast to prototype
-
-### Cons
-- Often unstable on printed forms
-- Easy to over-detect irrelevant geometry
-- Poor fit if answer areas are not clean circles
-
-### Expected reliability
-Probably not enough as the main method.
-
----
-
-## 6. Learned image classifier on cropped cells
-
-### Idea
-After registration, crop each answer cell and classify it as filled vs empty with a lightweight ML model.
-
-### How it works
-- Register sheet to fixed coordinates
-- Extract all candidate cells
-- Train a small classifier using synthetic augmentations and manually labeled examples
-- For each row, select the filled cell or `NULL`
-
-### Pros
-- Can outperform hard thresholds on subtle fill patterns
-- More tolerant of faint marks and print variation
-
-### Cons
-- Needs labeled data or synthetic generation
-- Overkill for a single document if classical methods already work
-- Still depends on good registration
-
-### Expected reliability
-Strong as a refinement layer, not as step one.
-
----
-
-## 7. Vision-model reading of the full page
-
-### Idea
-Use a multimodal model to read the page and return answers 1-45.
-
-### How it works
-- Pass rendered page image to a vision model
-- Ask it to extract marked option per row
-- Optionally use multiple passes and voting
-
-### Pros
-- Minimal custom computer vision code
-- Fast to test
-
-### Cons
-- Hard to guarantee determinism
-- Hard to prove >90% reliability without manual verification
-- Auditing is weaker than explicit geometry-based methods
-
-### Expected reliability
-Good for exploratory support, weak as the final authoritative path.
-
----
-
-## 8. Multi-method consensus system
-
-### Idea
-Run several readers and only accept answers when they agree.
-
-### How it works
-- Run two or three methods, for example:
-  - fixed-template intensity
-  - timing-mark-based registration
-  - cropped-cell classifier
-- Accept answer only if methods agree or confidence margin is high
-- Otherwise output `NULL`
-
-### Pros
-- Raises trustworthiness
-- Reduces silent failures
-- Good for final production mode
-
-### Cons
-- More engineering work
-- Lower coverage if methods disagree often
-
-### Expected reliability
-Very strong if paired with `NULL` for conflicts.
-
----
-
-## 9. Manual calibration + deterministic extractor
-
-### Idea
-Do a one-time manual calibration of exact coordinates for rows 1-45 and columns A-D on this one PDF, then build a deterministic reader around that.
-
-### How it works
-- Render the page at fixed DPI
-- Manually record the coordinates of all relevant boxes
-- Implement direct fill measurement with no automatic layout discovery
-- Optionally add a small alignment correction before reading
-
-### Pros
-- Extremely simple conceptually
-- Perfectly suited to the “single known page family” problem
-- Highly auditable
-
-### Cons
-- Less generalizable
-- Requires careful setup
-
-### Expected reliability
-Very high, if the render pipeline is fixed and stable.
-
----
-
-## 10. PDF-native analysis before raster OMR
-
-### Idea
-Inspect the PDF structure first to see whether useful vector/text elements can help locate the answer grid before raster analysis.
-
-### How it works
-- Check whether boxes, labels, or guide marks are vector elements
-- Use PDF coordinates to bootstrap registration
-- Then read marks from rasterized image at those coordinates
-
-### Pros
-- Could make alignment easier
-- Avoids unnecessary detection work if structure is encoded cleanly
-
-### Cons
-- Many scanned/flattened PDFs will not expose useful form structure
-- May not help with actual fill detection
-
-### Expected reliability
-Worth testing early, but unlikely to solve the whole problem alone.
-
----
-
-# Recommended evaluation plan
-
-## Phase 1: establish ground truth
-
-A trusted answer key for rows 1-45 is already available in `ground_truth.json`.
-
-Recommended complementary outputs:
-- annotated debug image with row numbers and chosen option
-
-This means the project can directly benchmark candidate methods instead of first creating the ground truth.
-
-## Phase 2: implement the best 3 candidate families
-
-Recommended first candidates:
-1. **Fixed-template registration + cell intensity**
-2. **Timing-mark-based registration**
-3. **Hybrid registration + timing-mark correction**
-
-## Phase 3: measure
-
-For each method, report:
-- exact matches out of 45
-- precision on accepted answers
-- recall if `NULL` is allowed
-- per-row confidence distribution
-- failure modes by row
-
-## Phase 4: harden
-
-Keep only methods that are:
-- auditable
-- deterministic or near-deterministic
-- robust under small perturbations
-
-Suggested perturbation tests:
-- render at different DPI values
-- slight rotation
-- light blur
-- brightness/contrast variation
-- tiny crop shifts
-
-If a method breaks under these, it is not production-ready.
-
----
-
-# Recommendation
-
-If the target is **real >90% reliability**, the best order to try is:
-
-1. **Manual calibration + deterministic extractor**
-2. **Fixed-template registration + intensity reading**
-3. **Timing-mark refinement**
-4. **Consensus between 2 and 3**
-
-I would avoid using a vision LLM or raw blob/circle detection as the primary solution. They may help exploration, but they are weaker as the final authoritative reader.
-
----
-
-# Deliverables this project should eventually produce
-
-- `sample.pdf`
-- `ground_truth.json`
-- one or more extraction scripts
-- one benchmark script
-- one report comparing methods
-- debug overlays showing detected rows/cells/marks
-- final decision on the most reliable approach
+I would not lead with ML or vision-model methods here. This problem is narrow, structured, and already yielding to a simpler, more auditable approach.

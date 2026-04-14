@@ -4,61 +4,37 @@
 
 Determine the most reliable way to read the filled answer boxes in `sample.pdf` for rows **1-45** only.
 
-## Non-goals
+## Success condition
 
-- No exam-question parsing
-- No database integration
-- No reuse of previous project assumptions
-- No attempt to read rows 46-100 as valid answers
-
-## Required success condition
-
-A proposed method is only acceptable if it can be demonstrated to reach:
-- **>90% accuracy**, or
+A method is acceptable if it demonstrates either:
+- **>90% exact accuracy**, or
 - very high precision with `NULL` for ambiguous rows
 
-## Phase 1 — Ground truth
+## Current status
 
-A trusted manual answer file for rows 1-45 is already provided.
+Phase 1 through Phase 3 have a working first pass.
 
-Available artifact:
-- `ground_truth.json`
+Implemented baseline:
+- manual calibration
+- fixed 200 DPI render
+- deterministic cell darkness reading
+- `NULL` when confidence margin is too small
 
-Optional follow-up artifacts:
-- annotated image showing row number and selected option
+Current benchmark result:
+- **44/45 exact matches**
+- **0 wrong answers**
+- **1 NULL**
+- **97.78% exact accuracy**
+- **100% accepted precision**
 
-Possible first helper steps (not implemented yet):
-- render `sample.pdf` to PNG at one or more fixed DPI values
-- generate an overlay image with rows 1-45 clearly numbered
-- create a small review checklist for manual annotation consistency
+Known borderline row:
+- row 35, currently returned as `NULL`
 
-## Phase 2 — Baseline implementation
+## Remaining work
 
-Implement at least one deterministic baseline, ideally:
-- manual calibration + fixed coordinates, or
-- template registration + cell intensity reading
+### Phase 4 — Robustness tests
 
-Deliverables:
-- extraction script
-- debug images
-- result JSON with confidence per row
-
-## Phase 3 — Benchmarking
-
-For each method tested, report:
-- exact matches / 45
-- wrong answers / 45
-- `NULL` answers / 45
-- precision, recall, and accepted coverage
-- rows that fail repeatedly
-
-Deliverables:
-- benchmark script
-- benchmark report in Markdown
-
-## Phase 4 — Robustness tests
-
-Test the method against small perturbations:
+Test the current baseline against small perturbations:
 - different DPI renders
 - tiny rotation
 - brightness/contrast changes
@@ -67,10 +43,24 @@ Test the method against small perturbations:
 
 A method that collapses under minor perturbations is not acceptable.
 
-## Phase 5 — Final recommendation
+### Phase 5 — Final recommendation
 
 Document:
-- best method
-- why it won
+- whether the current baseline remains above threshold under perturbation
+- whether a lightweight registration step is necessary
 - remaining failure modes
-- whether it is safe for production use
+- whether the method is safe for production use
+
+## Deliverables
+
+Already available:
+- `ground_truth.json`
+- `omr_baseline.py`
+- `out/baseline_overlay.png`
+- `out/baseline_results.json`
+- `benchmark_report.md`
+
+Still desirable:
+- robustness test harness
+- final recommendation report
+- optional calibration/registration abstraction
