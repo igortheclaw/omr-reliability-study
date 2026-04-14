@@ -1,84 +1,129 @@
 # OMR Reliability Study
 
-Small deterministic CV study for reading the filled answer bubbles on `sample.pdf`.
+Comparative study of deterministic OMR-reading approaches for a growing set of PDF answer sheets.
 
-## Scope
+## Project objective
 
-This repo stays intentionally narrow.
+The main goal of this repository is to **compare candidate approaches**, not just to keep a single working extractor.
 
-- One page family: `sample.pdf`
-- Only rows **1-45** are benchmarked
-- Valid outputs are `A`, `B`, `C`, `D`, or `NULL`
-- `NULL` is preferable to a wrong answer
+Today the repo contains one evaluated sheet. In the next phase, more PDFs can be added and benchmarked with the same approach framework.
 
-The sheet contains 100 numbered rows, but rows 46-100 are out of scope for this study.
+## Scope today
 
-## What this repo does now
+Current evaluated dataset:
+- `sample.pdf`
+- rows **1-45** only
+- valid outputs: `A`, `B`, `C`, `D`, or `NULL`
 
-This is now a **comparative OMR study**, not just a single working baseline.
+`NULL` is preferred over a wrong answer.
 
-Implemented approaches:
+## What the repo contains
+
+### Implemented approaches
 
 1. **Approach 1, manual calibration baseline**
-   - fixed bubble coordinates
-   - direct intensity reading at bubble centers
-   - `NULL` on low best-vs-second-best margin
-2. **Approach 2, fixed-template registration + intensity reading**
-   - affine ECC registration to a canonical layout
-   - then the same deterministic bubble readout
+   - fixed answer-cell coordinates
+   - deterministic darkness scoring
+   - `NULL` on low confidence margin
+
+2. **Approach 2, template registration + intensity reading**
+   - affine registration to a canonical layout
+   - same deterministic readout after alignment
+
 3. **Approach 3, timing-mark anchored registration**
-   - detect the right-edge timing marks
-   - use them as row anchors
-   - then read the fixed answer columns
+   - detect right-edge timing marks
+   - use them to anchor row positions
+   - deterministic readout on the fixed answer columns
 
-## Observed benchmark on the provided sample
+### Shared benchmarking pieces
 
-From `python3 benchmark_all.py`:
+- `omr_core.py` — shared rendering, scoring, evaluation, and artifact helpers
+- `omr_approaches.py` — all currently implemented approaches
+- `benchmark_all.py` — main comparative benchmark entrypoint
+- `run_legacy_baseline.py` — compatibility entrypoint for approach 1 only
+- `omr_baseline.py` — thin compatibility wrapper kept for legacy usage
 
-| Approach | Exact | Wrong | NULL | Accuracy | Accepted precision | Coverage |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Approach 1, baseline | 44/45 | 0 | 1 | 97.78% | 100.00% | 97.78% |
-| Approach 2, template registration | 44/45 | 0 | 1 | 97.78% | 100.00% | 97.78% |
-| Approach 3, timing marks | 45/45 | 0 | 0 | 100.00% | 100.00% | 100.00% |
+### Dataset inputs
 
-Best observed result on the provided page: **Approach 3**.
-
-## Repository layout
-
-Inputs:
 - `sample.pdf`
 - `ground_truth.json`
 - `ground_truth.template.json`
 
-Implementation:
-- `omr_core.py` - shared geometry, scoring, evaluation, and artifact helpers
-- `omr_approaches.py` - all implemented approaches
-- `omr_baseline.py` - compatibility entrypoint for approach 1 only
-- `benchmark_all.py` - common comparative benchmark runner
+### Reports
 
-Documentation:
-- `TASK.md`
-- `APPROACHES.md`
-- `benchmark_report.md`
+- `APPROACHES.md` — candidate-family overview and strategy
+- `TASK.md` — current project state and next expansion steps
+- `benchmark_report.md` — current benchmark results and interpretation
 
-Generated artifacts in `out/`:
-- `page-1.png`
-- per-approach overlays and result JSON files
+## Current benchmark on the first dataset
+
+Run with:
+
+```bash
+python3 benchmark_all.py
+```
+
+Observed results on `sample.pdf`:
+
+| Approach | Exact | Wrong | NULL | Accuracy |
+| --- | ---: | ---: | ---: | ---: |
+| Approach 1 | 44/45 | 0 | 1 | 97.78% |
+| Approach 2 | 44/45 | 0 | 1 | 97.78% |
+| Approach 3 | 45/45 | 0 | 0 | 100.00% |
+
+Best observed approach on the current dataset: **Approach 3**.
+
+## Repository structure
+
+```text
+.
+├── sample.pdf
+├── ground_truth.json
+├── ground_truth.template.json
+├── omr_core.py
+├── omr_approaches.py
+├── benchmark_all.py
+├── run_legacy_baseline.py
+├── omr_baseline.py
+├── README.md
+├── APPROACHES.md
+├── TASK.md
+├── benchmark_report.md
+└── out/
+```
+
+Generated artifacts under `out/` include:
+- one rendered page image
+- one overlay per approach
+- one result JSON per approach
 - `benchmark_summary.json`
 
 ## How to run
 
-Render the page if needed, then run either the baseline or the full comparison.
+Render if needed, then run the benchmark:
 
 ```bash
 mkdir -p out
 pdftoppm -png -r 200 sample.pdf out/page
-python3 omr_baseline.py
 python3 benchmark_all.py
 ```
 
-## Notes
+Legacy single-approach run, if needed:
 
-- The methods here are deliberately simple, deterministic, and auditable.
-- No ML classifier is used.
-- The benchmark results are only for the provided `sample.pdf`; they are not a claim of production robustness on unseen forms.
+```bash
+python3 run_legacy_baseline.py
+```
+
+## Direction for the next phase
+
+This repo should grow by **adding more PDFs and evaluating the same approach families on all of them**.
+
+That means future cleanup and development should bias toward:
+- dataset-oriented organization
+- reusable benchmark entrypoints
+- per-dataset results
+- honest cross-approach comparison
+
+## Non-goal
+
+This repo is not trying to become a generic OCR platform or a production grading system yet. Right now it is a focused comparative study of deterministic OMR strategies.

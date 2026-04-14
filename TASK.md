@@ -2,52 +2,64 @@
 
 ## Objective
 
-Turn this repo from a single working extractor into a small but real comparative OMR study for rows **1-45** of `sample.pdf`.
+Keep this repository focused on a clear purpose:
 
-## Done
+**compare OMR-reading approaches across one or more PDF sheets using a common benchmark structure.**
 
-Completed work:
-- kept the original manual baseline as **approach 1**
-- implemented **approach 2**: fixed-template registration + intensity reading
-- implemented **approach 3**: timing-mark anchored registration
-- added a shared benchmark runner for all approaches
-- saved per-approach overlays and JSON outputs under `out/`
-- updated the docs to report a comparison instead of only the first success
+The current repo should be treated as the first dataset in that broader study, not as a one-off script for a single page.
 
-## Benchmark status
+## Current status
 
-Current observed benchmark on the provided page:
+Implemented approaches:
+- Approach 1, manual calibration baseline
+- Approach 2, template registration + intensity reading
+- Approach 3, timing-mark anchored registration
+
+Shared benchmark runner:
+- `benchmark_all.py`
+
+Shared core logic:
+- `omr_core.py`
+- `omr_approaches.py`
+
+Current evaluated dataset:
+- `sample.pdf`
+- rows 1-45
+- ground truth in `ground_truth.json`
+
+## Current benchmark
 
 | Approach | Exact | Wrong | NULL | Accuracy |
 | --- | ---: | ---: | ---: | ---: |
-| Approach 1, baseline | 44/45 | 0 | 1 | 97.78% |
-| Approach 2, template registration | 44/45 | 0 | 1 | 97.78% |
-| Approach 3, timing marks | 45/45 | 0 | 0 | 100.00% |
+| Approach 1 | 44/45 | 0 | 1 | 97.78% |
+| Approach 2 | 44/45 | 0 | 1 | 97.78% |
+| Approach 3 | 45/45 | 0 | 0 | 100.00% |
 
-## Current recommendation
+## Immediate cleanup goal
 
-Best observed deterministic method on the provided sample:
-- **Approach 3, timing-mark anchored registration**
+Make the repo structure and naming clearly communicate that:
+- the benchmark compares approaches
+- the same framework should later support more PDFs
+- old one-off baseline entrypoints are secondary, not the main story
 
-Reason:
-- it preserves the same transparent intensity scoring
-- it replaces manually stepped row Y positions with detected structural anchors
-- it resolves the baseline's lone ambiguous row on the current sample
+## Next phase expectations
 
-## Remaining optional work
+When new PDFs are added, the repo should support:
+- adding a new dataset without rewriting the approach logic
+- running the same approaches against each dataset
+- storing per-dataset outputs and benchmark summaries
+- comparing approach behavior across datasets, not only within one page
 
-Useful next steps if the study is expanded:
-- perturbation tests across DPI, rotation, crop shift, blur, and contrast changes
-- multiple-page evaluation if more sheets become available
-- hybrid registration combining coarse page alignment with timing-mark correction
+## Good next technical steps
 
-## Deliverables now present
+1. Introduce a dataset-oriented layout, for example per-PDF inputs and outputs.
+2. Generalize the benchmark runner so it can target a selected dataset or all datasets.
+3. Move any legacy naming that over-emphasizes the original baseline into clearer compatibility wrappers or remove it.
+4. Keep reports honest: only claim results that were actually run.
 
-- `omr_core.py`
-- `omr_approaches.py`
-- `benchmark_all.py`
-- updated `omr_baseline.py`
-- updated `README.md`
-- updated `APPROACHES.md`
-- updated `benchmark_report.md`
-- generated benchmark artifacts in `out/`
+## Standard of success
+
+The repo is in good shape when a new PDF can be added as a new benchmark case with minimal glue code, and the main user experience remains:
+- define dataset
+- run benchmark
+- compare approaches

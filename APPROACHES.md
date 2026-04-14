@@ -1,91 +1,94 @@
-# Comparative OMR approaches for this sheet
+# Candidate approach families
 
-## Goal
+This repository exists to compare deterministic OMR-reading approaches on one or more PDFs.
 
-Evaluate multiple deterministic ways to read rows 1-45 from `sample.pdf`, using the same ground truth and comparable metrics.
+The current implementations should be seen as the first three benchmarked candidates in an expanding study.
 
-## Implemented approaches
+## Current benchmarked approaches
 
-### 1. Manual calibration baseline
+### Approach 1. Manual calibration baseline
 
-Method:
-- keep the original hand-tuned bubble centers for the two visible answer groups
-- measure mean darkness inside a circular patch at each A/B/C/D location
-- pick the darkest option
-- return `NULL` when the top two scores are too close
+Use fixed coordinates for the answer cells and read darkness directly at those positions.
+
+Characteristics:
+- simplest implementation
+- highly auditable
+- strongest dependency on fixed geometry
+- good baseline for comparison
+
+Current result on `sample.pdf`:
+- 44/45 exact
+- 0 wrong
+- 1 `NULL`
+
+### Approach 2. Template registration + intensity reading
+
+Align the page to a canonical layout, then read the answer cells at the expected coordinates.
+
+Characteristics:
+- keeps the same transparent scoring as approach 1
+- adds geometric normalization before measurement
+- intended to be more robust when input geometry drifts slightly
+
+Current result on `sample.pdf`:
+- 44/45 exact
+- 0 wrong
+- 1 `NULL`
+
+### Approach 3. Timing-mark anchored registration
+
+Detect the right-edge timing marks and use them as structural anchors for row positioning before reading answer cells.
+
+Characteristics:
+- uses form structure designed for machine reading
+- remains deterministic and auditable
+- best current fit for row alignment on this sheet family
+
+Current result on `sample.pdf`:
+- 45/45 exact
+- 0 wrong
+- 0 `NULL`
+
+## Additional approach families worth testing later
+
+These are still reasonable candidates for later expansion:
+
+### Approach 4. Hybrid registration
+
+Combine coarse template registration with local timing-mark correction.
 
 Why it matters:
-- simplest and easiest to audit
-- serves as the control for the rest of the study
+- likely strongest classical CV option if geometry variation grows
+- natural next hardening step after approaches 2 and 3
 
-Observed result:
-- **44/45 exact**
-- **0 wrong**
-- **1 NULL**
-- borderline row: **35**
+### Approach 5. Contour/component-based OMR
 
-### 2. Fixed-template registration + intensity reading
-
-Method:
-- treat the current page layout as a canonical template
-- run affine ECC registration on the answer-region crop
-- transform the expected bubble coordinates through the estimated warp
-- read bubble darkness at the registered positions
-- use the same margin rule as approach 1
+Detect answer areas through thresholding and connected components rather than using predeclared cell centers.
 
 Why it matters:
-- same transparent readout logic as the baseline
-- introduces an explicit geometric normalization stage
-- useful as the natural next hardening step for small drift
+- more layout-driven than coordinate-driven
+- useful as a contrasting family in the benchmark
 
-Observed result:
-- **44/45 exact**
-- **0 wrong**
-- **1 NULL**
-- same borderline row: **35**
+### Approach 6. Learned filled-vs-empty cell classifier
 
-Interpretation:
-- on this already well-aligned sample, template registration does not materially change the result
-- it still documents the registration-based family honestly and reproducibly
-
-### 3. Timing-mark anchored registration
-
-Method:
-- threshold the page and detect the repeated right-edge timing marks as connected components
-- sort them vertically and use the visible sequence as the row anchor set
-- map each scored row onto its detected timing mark Y coordinate
-- keep fixed X coordinates for the A/B/C/D bubbles within each answer group
-- read bubble darkness using the same deterministic scorer
+After registration, classify cropped cells as filled or empty.
 
 Why it matters:
-- uses structural features that are actually designed for machine reading
-- reduces dependence on hand-entered row Y coordinates
-- stays simple and auditable
+- may help with faint or noisy marks
+- more complex and less elegant than current deterministic methods
 
-Observed result:
-- **45/45 exact**
-- **0 wrong**
-- **0 NULL**
+### Approach 7. Multi-method consensus
 
-Interpretation:
-- on the provided page, the timing marks correct the slight Y offset that made row 35 ambiguous for the baseline family
-- this is the best observed method in the repo right now
+Run several approaches and only accept an answer when they agree or when one wins with strong confidence.
 
-## Shared evaluation policy
+Why it matters:
+- can trade coverage for trustworthiness
+- attractive once there are multiple datasets and known failure modes
 
-All approaches are benchmarked the same way:
-- same rendered page
-- same ground truth
-- same answer vocabulary
-- same metrics: exact matches, wrong, NULL, accuracy, accepted precision, accepted coverage
+## Current recommendation
 
-## Recommendation from the current evidence
-
-For this specific sample:
-1. keep approach 1 as the clean control baseline
-2. keep approach 2 as the registration-family comparator
-3. prefer approach 3 as the best observed deterministic method
-
-Important caveat:
-- this repo still benchmarks one provided form only
-- stronger claims would require perturbation tests or more pages
+For the current repository state:
+1. keep approach 1 as a reference baseline
+2. treat approaches 2 and 3 as real comparative candidates
+3. prefer approach 3 as the best observed method on the first dataset
+4. evolve the repo around cross-dataset comparison, not around one single winning script
