@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-from dataclasses import asdict
-
 import cv2
 import numpy as np
 
 from omr_core import (
     ApproachResult,
+    DatasetConfig,
     GROUPS,
     NULL_MARGIN,
-    OUT,
-    PNG,
     RADIUS,
     evaluate_answers,
+    get_dataset,
     load_page,
     render_overlay,
     run_circle_sampler,
@@ -28,32 +26,37 @@ TIMING_MARK_AREA_MIN = 500
 FIRST_VISIBLE_MARK_INDEX = 16
 
 
-def approach_1_baseline():
-    gray, rgb = load_page()
+def _resolve_dataset(dataset: DatasetConfig | None) -> DatasetConfig:
+    return dataset or get_dataset()
+
+
+def approach_1_baseline(dataset: DatasetConfig | None = None):
+    dataset = _resolve_dataset(dataset)
+    gray, rgb = load_page(dataset)
 
     def geometry(group, row):
         y = group['y0'] + group['dy'] * (row - group['rows'].start)
         return y, group['xs']
 
     answers, debug = run_circle_sampler(gray, geometry, null_margin=NULL_MARGIN, radius=RADIUS)
-    metrics = evaluate_answers(answers, debug, extra_metrics={'null_margin': NULL_MARGIN, 'radius': RADIUS})
+    metrics = evaluate_answers(dataset, answers, debug, extra_metrics={'null_margin': NULL_MARGIN, 'radius': RADIUS})
     result = ApproachResult(
         approach_id='approach_1_baseline',
         name='Approach 1, manual calibration baseline',
         summary='Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.',
+        dataset_id=dataset.dataset_id,
         answers=answers,
         debug=debug,
         metrics=metrics,
     )
-    render_overlay(rgb, debug, OUT / 'approach_1_baseline_overlay.png')
-    save_result(result)
+    render_overlay(rgb, debug, dataset.out_dir / 'approach_1_baseline_overlay.png')
+    save_result(dataset, result)
     return result
 
 
 def _estimate_template_affine(gray):
     template = gray.copy()
-    # central crop containing both answer groups, excluding page borders
-    roi = (220, 1240, 860, 1020)  # x, y, w, h
+    roi = (220, 1240, 860, 1020)
     x, y, w, h = roi
     moving = gray[y:y + h, x:x + w].astype(np.float32) / 255.0
     fixed = template[y:y + h, x:x + w].astype(np.float32) / 255.0
@@ -66,8 +69,9 @@ def _estimate_template_affine(gray):
     return warp
 
 
-def approach_2_template_registration():
-    gray, rgb = load_page()
+def approach_2_template_registration(dataset: DatasetConfig | None = None):
+    dataset = _resolve_dataset(dataset)
+    gray, rgb = load_page(dataset)
     warp = _estimate_template_affine(gray)
 
     def geometry(group, row):
@@ -84,6 +88,7 @@ def approach_2_template_registration():
 
     answers, debug = run_circle_sampler(gray, geometry, null_margin=NULL_MARGIN, radius=RADIUS)
     metrics = evaluate_answers(
+        dataset,
         answers,
         debug,
         extra_metrics={
@@ -96,12 +101,13 @@ def approach_2_template_registration():
         approach_id='approach_2_template_registration',
         name='Approach 2, fixed-template registration + intensity reading',
         summary='Affine ECC registration to a canonical template, then read the canonical bubble grid.',
+        dataset_id=dataset.dataset_id,
         answers=answers,
         debug=debug,
         metrics=metrics,
     )
-    render_overlay(rgb, debug, OUT / 'approach_2_template_registration_overlay.png')
-    save_result(result)
+    render_overlay(rgb, debug, dataset.out_dir / 'approach_2_template_registration_overlay.png')
+    save_result(dataset, result)
     return result
 
 
@@ -117,8 +123,9 @@ def _detect_timing_marks(gray):
     return marks
 
 
-def approach_3_timing_marks():
-    gray, rgb = load_page()
+def approach_3_timing_marks(dataset: DatasetConfig | None = None):
+    dataset = _resolve_dataset(dataset)
+    gray, rgb = load_page(dataset)
     marks = _detect_timing_marks(gray)
     if len(marks) < FIRST_VISIBLE_MARK_INDEX + 25:
         raise SystemExit(f'Expected enough timing marks, found {len(marks)}')
@@ -130,6 +137,7 @@ def approach_3_timing_marks():
 
     answers, debug = run_circle_sampler(gray, geometry, null_margin=NULL_MARGIN, radius=RADIUS)
     metrics = evaluate_answers(
+        dataset,
         answers,
         debug,
         extra_metrics={
@@ -144,12 +152,13 @@ def approach_3_timing_marks():
         approach_id='approach_3_timing_marks',
         name='Approach 3, timing-mark anchored registration',
         summary='Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.',
+        dataset_id=dataset.dataset_id,
         answers=answers,
         debug=debug,
         metrics=metrics,
     )
-    render_overlay(rgb, debug, OUT / 'approach_3_timing_marks_overlay.png')
-    save_result(result)
+    render_overlay(rgb, debug, dataset.out_dir / 'approach_3_timing_marks_overlay.png')
+    save_result(dataset, result)
     return result
 
 

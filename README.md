@@ -1,80 +1,72 @@
 # OMR Reliability Study
 
-Comparative study of deterministic OMR-reading approaches for a growing set of PDF answer sheets.
+Comparative study of deterministic OMR-reading approaches across multiple prepared datasets.
 
-## Project objective
+## Objective
 
-The main goal of this repository is to **compare candidate approaches**, not just to keep a single working extractor.
+The repository is organized around one stable question: how the same deterministic OMR approaches behave across different answer-sheet PDFs.
 
-The repo already contains multiple PDFs and is being prepared to benchmark them with the same approach framework.
+The code now uses dataset directories under `datasets/<dataset_id>/` as the primary input contract.
 
-## Scope today
+## Dataset-oriented workflow
 
-Currently benchmarked dataset:
-- `sample.pdf`
-- rows **1-45** only
-- valid outputs: `A`, `B`, `C`, `D`, or `NULL`
+Each dataset lives under `datasets/<dataset_id>/` and should contain:
+- `dataset.json` with the dataset id and PDF location
+- `ground_truth.json` with trusted answers for benchmarked rows
+- `ground_truth.template.json` as a blank template
+- `README.md` with dataset-specific notes
 
-Additional PDFs already added for the next phase live under `datasets/`.
+The benchmark reads:
+- the PDF path from `datasets/<dataset_id>/dataset.json`
+- the answers from `datasets/<dataset_id>/ground_truth.json`
 
-`NULL` is preferred over a wrong answer.
+Generated artifacts are written under:
+- `out/<dataset_id>/page-1.png`
+- `out/<dataset_id>/approach_*_results.json`
+- `out/<dataset_id>/approach_*_overlay.png`
+- `out/<dataset_id>/benchmark_summary.json`
 
-## What the repo contains
+The aggregate multi-dataset summary is written to `out/benchmark_summary.json`.
 
-### Implemented approaches
+## Implemented approaches
 
-1. **Approach 1, manual calibration baseline**
-   - fixed answer-cell coordinates
-   - deterministic darkness scoring
-   - `NULL` on low confidence margin
+1. Approach 1, manual calibration baseline
+2. Approach 2, template registration + intensity reading
+3. Approach 3, timing-mark anchored registration
 
-2. **Approach 2, template registration + intensity reading**
-   - affine registration to a canonical layout
-   - same deterministic readout after alignment
+These remain deterministic and auditable. The comparative structure is unchanged; only the dataset handling was generalized.
 
-3. **Approach 3, timing-mark anchored registration**
-   - detect right-edge timing marks
-   - use them to anchor row positions
-   - deterministic readout on the fixed answer columns
+## How to run
 
-### Shared benchmarking pieces
-
-- `omr_core.py` — shared rendering, scoring, evaluation, and artifact helpers
-- `omr_approaches.py` — all currently implemented approaches
-- `benchmark_all.py` — main comparative benchmark entrypoint
-- `run_legacy_baseline.py` — compatibility entrypoint for approach 1 only
-- `omr_baseline.py` — thin compatibility wrapper kept for legacy usage
-
-### Dataset inputs
-
-Current benchmark case:
-- `sample.pdf`
-- `ground_truth.json`
-- `ground_truth.template.json`
-
-Prepared dataset directories:
-- `datasets/sample/`
-- `datasets/2021_2P_PER_modelo_B_definitiva4/`
-- `datasets/2022_3P_PER_modelo_A/`
-- `datasets/2023_1P_PER_modelo_B/`
-- `datasets/2024_2-SOL_PER_modelo_A/`
-- `datasets/2026_1-SOL_PER_modelo_A/`
-
-### Reports
-
-- `APPROACHES.md` — candidate-family overview and strategy
-- `TASK.md` — current project state and next expansion steps
-- `benchmark_report.md` — current benchmark results and interpretation
-
-## Current benchmark on the first dataset
-
-Run with:
+Benchmark every discovered dataset with at least one labeled answer:
 
 ```bash
 python3 benchmark_all.py
 ```
 
-Observed results on `sample.pdf`:
+Benchmark one dataset explicitly:
+
+```bash
+python3 benchmark_all.py --dataset sample
+```
+
+Explicitly enumerate all prepared datasets and skip unfinished ones with a reason:
+
+```bash
+python3 benchmark_all.py --all
+```
+
+Legacy wrapper for approach 1 only:
+
+```bash
+python3 run_legacy_baseline.py --dataset sample
+```
+
+## Current benchmark status
+
+As of 2026-04-14, only `datasets/sample/ground_truth.json` contains non-null answers, so only `sample` is benchmarkable today.
+
+Current observed results on `sample`:
 
 | Approach | Exact | Wrong | NULL | Accuracy |
 | --- | ---: | ---: | ---: | ---: |
@@ -82,61 +74,24 @@ Observed results on `sample.pdf`:
 | Approach 2 | 44/45 | 0 | 1 | 97.78% |
 | Approach 3 | 45/45 | 0 | 0 | 100.00% |
 
-Best observed approach on the current dataset: **Approach 3**.
+Other prepared datasets are supported by the code and will be benchmarked automatically once their `ground_truth.json` files contain trusted non-null answers.
 
 ## Repository structure
 
 ```text
 .
-├── sample.pdf
-├── ground_truth.json
-├── ground_truth.template.json
-├── omr_core.py
-├── omr_approaches.py
 ├── benchmark_all.py
 ├── run_legacy_baseline.py
-├── omr_baseline.py
+├── omr_core.py
+├── omr_approaches.py
 ├── datasets/
-├── README.md
-├── APPROACHES.md
-├── TASK.md
-├── benchmark_report.md
-└── out/
+│   └── <dataset_id>/
+├── out/
+└── README.md
 ```
 
-Generated artifacts under `out/` include:
-- one rendered page image
-- one overlay per approach
-- one result JSON per approach
-- `benchmark_summary.json`
+## Notes
 
-## How to run
-
-Render if needed, then run the benchmark:
-
-```bash
-mkdir -p out
-pdftoppm -png -r 200 sample.pdf out/page
-python3 benchmark_all.py
-```
-
-Legacy single-approach run, if needed:
-
-```bash
-python3 run_legacy_baseline.py
-```
-
-## Direction for the next phase
-
-This repo should grow by **wiring the prepared dataset directories into the shared benchmark and evaluating the same approach families on all of them**.
-
-That means future cleanup and development should bias toward:
-- dataset-oriented organization
-- reusable benchmark entrypoints
-- per-dataset results
-- honest cross-approach comparison
-- manual ground-truth completion without changing code structure
-
-## Non-goal
-
-This repo is not trying to become a generic OCR platform or a production grading system yet. Right now it is a focused comparative study of deterministic OMR strategies.
+- `datasets/sample/` is the canonical replacement for the original top-level `sample.pdf` + `ground_truth.json` benchmark case.
+- Top-level legacy files are kept only as compatibility history; the main path is dataset-oriented.
+- Datasets with empty or partially unfilled ground truth are not used to make benchmark claims beyond their labeled rows.

@@ -10,6 +10,6 @@
     "D",
     null
   ],
-  "status": "pending_ground_truth",
-  "notes": "Fill ground_truth.json with trusted answers for rows 1-45."
+  "status": "ground_truth_ready",
+  "notes": "Canonical benchmark dataset migrated from the original top-level sample benchmark."
 }

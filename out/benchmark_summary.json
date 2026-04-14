@@ -1,68 +1,112 @@
 {
-  "approaches": [
+  "mode": "multi",
+  "datasets_run": [
+    "sample"
+  ],
+  "datasets_skipped": [
     {
-      "approach_id": "approach_1_baseline",
-      "name": "Approach 1, manual calibration baseline",
-      "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
-      "exact_matches": 44,
-      "wrong": 0,
-      "null": 1,
-      "rows": 45,
-      "accuracy": 0.9777777777777777,
-      "accepted_precision": 1.0,
-      "accepted_coverage": 0.9777777777777777,
-      "failures": [
-        {
-          "row": 35,
-          "truth": "A",
-          "pred": null
-        }
-      ]
+      "dataset_id": "2021_2P_PER_modelo_B_definitiva4",
+      "reason": "ground_truth.json has no non-null answers yet"
     },
     {
-      "approach_id": "approach_2_template_registration",
-      "name": "Approach 2, fixed-template registration + intensity reading",
-      "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
-      "exact_matches": 44,
-      "wrong": 0,
-      "null": 1,
-      "rows": 45,
-      "accuracy": 0.9777777777777777,
-      "accepted_precision": 1.0,
-      "accepted_coverage": 0.9777777777777777,
-      "failures": [
-        {
-          "row": 35,
-          "truth": "A",
-          "pred": null
-        }
-      ]
+      "dataset_id": "2022_3P_PER_modelo_A",
+      "reason": "ground_truth.json has no non-null answers yet"
     },
     {
-      "approach_id": "approach_3_timing_marks",
-      "name": "Approach 3, timing-mark anchored registration",
-      "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
-      "exact_matches": 45,
-      "wrong": 0,
-      "null": 0,
-      "rows": 45,
-      "accuracy": 1.0,
-      "accepted_precision": 1.0,
-      "accepted_coverage": 1.0,
-      "failures": []
+      "dataset_id": "2023_1P_PER_modelo_B",
+      "reason": "ground_truth.json has no non-null answers yet"
+    },
+    {
+      "dataset_id": "2024_2-SOL_PER_modelo_A",
+      "reason": "ground_truth.json has no non-null answers yet"
+    },
+    {
+      "dataset_id": "2026_1-SOL_PER_modelo_A",
+      "reason": "ground_truth.json has no non-null answers yet"
     }
   ],
-  "best_observed": {
-    "approach_id": "approach_3_timing_marks",
-    "name": "Approach 3, timing-mark anchored registration",
-    "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
-    "exact_matches": 45,
-    "wrong": 0,
-    "null": 0,
-    "rows": 45,
-    "accuracy": 1.0,
-    "accepted_precision": 1.0,
-    "accepted_coverage": 1.0,
-    "failures": []
-  }
+  "dataset_summaries": [
+    {
+      "dataset_id": "sample",
+      "pdf_path": "sample.pdf",
+      "approaches": [
+        {
+          "approach_id": "approach_1_baseline",
+          "name": "Approach 1, manual calibration baseline",
+          "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+          "dataset_id": "sample",
+          "exact_matches": 44,
+          "wrong": 0,
+          "null": 1,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.9777777777777777,
+          "accepted_precision": 1.0,
+          "accepted_coverage": 0.9777777777777777,
+          "failures": [
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_2_template_registration",
+          "name": "Approach 2, fixed-template registration + intensity reading",
+          "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
+          "dataset_id": "sample",
+          "exact_matches": 44,
+          "wrong": 0,
+          "null": 1,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.9777777777777777,
+          "accepted_precision": 1.0,
+          "accepted_coverage": 0.9777777777777777,
+          "failures": [
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_3_timing_marks",
+          "name": "Approach 3, timing-mark anchored registration",
+          "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
+          "dataset_id": "sample",
+          "exact_matches": 45,
+          "wrong": 0,
+          "null": 0,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 1.0,
+          "accepted_precision": 1.0,
+          "accepted_coverage": 1.0,
+          "failures": []
+        }
+      ],
+      "best_observed": {
+        "approach_id": "approach_3_timing_marks",
+        "name": "Approach 3, timing-mark anchored registration",
+        "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
+        "dataset_id": "sample",
+        "exact_matches": 45,
+        "wrong": 0,
+        "null": 0,
+        "rows": 45,
+        "total_rows": 45,
+        "labeled_rows": 45,
+        "accuracy": 1.0,
+        "accepted_precision": 1.0,
+        "accepted_coverage": 1.0,
+        "failures": []
+      }
+    }
+  ]
 }

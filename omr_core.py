@@ -9,9 +9,9 @@ import cv2
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent
+DATASETS_DIR = ROOT / 'datasets'
 OUT = ROOT / 'out'
-PNG = OUT / 'page-1.png'
-GT = ROOT / 'ground_truth.json'
+DEFAULT_DATASET_ID = 'sample'
 
 GROUPS = [
     {
@@ -33,11 +33,30 @@ RADIUS = 11
 NULL_MARGIN = 10.0
 
 
+@dataclass(frozen=True)
+class DatasetConfig:
+    dataset_id: str
+    dataset_dir: Path
+    pdf_path: Path
+    ground_truth_path: Path
+    metadata_path: Path
+    metadata: dict
+
+    @property
+    def out_dir(self) -> Path:
+        return OUT / self.dataset_id
+
+    @property
+    def rendered_png(self) -> Path:
+        return self.out_dir / 'page-1.png'
+
+
 @dataclass
 class ApproachResult:
     approach_id: str
     name: str
     summary: str
+    dataset_id: str
     answers: dict
     debug: list
     metrics: dict
@@ -47,37 +66,94 @@ class ApproachResult:
             'approach_id': self.approach_id,
             'name': self.name,
             'summary': self.summary,
+            'dataset_id': self.dataset_id,
             'answers': self.answers,
             'debug': self.debug,
             'metrics': self.metrics,
         }
 
 
-def ensure_rendered_page():
-    OUT.mkdir(exist_ok=True)
-    if PNG.exists():
-        return PNG
-    cmd = ['pdftoppm', '-png', '-r', '200', str(ROOT / 'sample.pdf'), str(OUT / 'page')]
+def _load_json(path: Path) -> dict:
+    return json.loads(path.read_text(encoding='utf-8'))
+
+
+def discover_datasets() -> list[DatasetConfig]:
+    datasets = []
+    if not DATASETS_DIR.exists():
+        return datasets
+
+    for dataset_dir in sorted(p for p in DATASETS_DIR.iterdir() if p.is_dir()):
+        metadata_path = dataset_dir / 'dataset.json'
+        ground_truth_path = dataset_dir / 'ground_truth.json'
+        if not metadata_path.exists() or not ground_truth_path.exists():
+            continue
+        metadata = _load_json(metadata_path)
+        dataset_id = metadata.get('dataset_id', dataset_dir.name)
+        pdf_path = ROOT / metadata['pdf_path']
+        datasets.append(
+            DatasetConfig(
+                dataset_id=dataset_id,
+                dataset_dir=dataset_dir,
+                pdf_path=pdf_path,
+                ground_truth_path=ground_truth_path,
+                metadata_path=metadata_path,
+                metadata=metadata,
+            )
+        )
+    return datasets
+
+
+def get_dataset(dataset_id: str = DEFAULT_DATASET_ID) -> DatasetConfig:
+    datasets = discover_datasets()
+    for dataset in datasets:
+        if dataset.dataset_id == dataset_id:
+            return dataset
+    available = ', '.join(d.dataset_id for d in datasets)
+    raise SystemExit(f'Unknown dataset {dataset_id!r}. Available datasets: {available}')
+
+
+def load_ground_truth_payload(dataset: DatasetConfig) -> dict:
+    return _load_json(dataset.ground_truth_path)
+
+
+def load_ground_truth(dataset: DatasetConfig) -> dict:
+    return load_ground_truth_payload(dataset)['answers']
+
+
+def labeled_ground_truth_answers(dataset: DatasetConfig) -> dict:
+    answers = load_ground_truth(dataset)
+    return {row: value for row, value in answers.items() if value is not None}
+
+
+def count_labeled_answers(dataset: DatasetConfig) -> int:
+    return len(labeled_ground_truth_answers(dataset))
+
+
+def dataset_is_benchmarkable(dataset: DatasetConfig) -> bool:
+    return count_labeled_answers(dataset) > 0
+
+
+def ensure_rendered_page(dataset: DatasetConfig) -> Path:
+    dataset.out_dir.mkdir(parents=True, exist_ok=True)
+    if dataset.rendered_png.exists():
+        return dataset.rendered_png
+    cmd = ['pdftoppm', '-png', '-r', '200', str(dataset.pdf_path), str(dataset.out_dir / 'page')]
     try:
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except (FileNotFoundError, subprocess.CalledProcessError) as exc:
-        raise SystemExit('Could not render sample.pdf. Install pdftoppm and rerun.') from exc
-    if not PNG.exists():
-        raise SystemExit('Could not render sample.pdf. Install pdftoppm and rerun.')
-    return PNG
+        raise SystemExit(f'Could not render {dataset.pdf_path}. Install pdftoppm and rerun.') from exc
+    if not dataset.rendered_png.exists():
+        raise SystemExit(f'Could not render {dataset.pdf_path}. Install pdftoppm and rerun.')
+    return dataset.rendered_png
 
 
-def load_page():
-    ensure_rendered_page()
-    gray = cv2.imread(str(PNG), cv2.IMREAD_GRAYSCALE)
-    rgb = cv2.imread(str(PNG), cv2.IMREAD_COLOR)
+def load_page(dataset: DatasetConfig):
+    png_path = ensure_rendered_page(dataset)
+    gray = cv2.imread(str(png_path), cv2.IMREAD_GRAYSCALE)
+    rgb = cv2.imread(str(png_path), cv2.IMREAD_COLOR)
     if gray is None or rgb is None:
-        raise SystemExit(f'Could not read {PNG}')
+        raise SystemExit(f'Could not read {png_path}')
     return gray, rgb
-
-
-def load_ground_truth():
-    return json.loads(GT.read_text(encoding='utf-8'))['answers']
 
 
 def circle_darkness(img, cx, cy, r=RADIUS):
@@ -97,8 +173,8 @@ def pick(scores, null_margin=NULL_MARGIN):
     return best_label, margin
 
 
-def evaluate_answers(answers, debug, extra_metrics=None):
-    gt = load_ground_truth()
+def evaluate_answers(dataset: DatasetConfig, answers, debug, extra_metrics=None):
+    gt = labeled_ground_truth_answers(dataset)
     exact = wrong = nulls = 0
     accepted_correct = accepted_total = 0
     failures = []
@@ -116,14 +192,17 @@ def evaluate_answers(answers, debug, extra_metrics=None):
             accepted_total += 1
             failures.append({'row': int(row_s), 'truth': truth, 'pred': pred})
 
+    labeled_rows = len(gt)
     metrics = {
         'exact_matches': exact,
         'wrong': wrong,
         'null': nulls,
-        'rows': len(gt),
-        'accuracy': exact / len(gt),
+        'rows': labeled_rows,
+        'total_rows': len(load_ground_truth(dataset)),
+        'labeled_rows': labeled_rows,
+        'accuracy': exact / labeled_rows,
         'accepted_precision': (accepted_correct / accepted_total) if accepted_total else None,
-        'accepted_coverage': accepted_total / len(gt),
+        'accepted_coverage': accepted_total / labeled_rows,
         'mean_margin': mean(d['margin'] for d in debug),
         'failures': failures,
     }
@@ -181,8 +260,8 @@ def run_circle_sampler(
     return answers, debug
 
 
-def save_result(result: ApproachResult):
-    OUT.mkdir(exist_ok=True)
-    out_json = OUT / f'{result.approach_id}_results.json'
+def save_result(dataset: DatasetConfig, result: ApproachResult):
+    dataset.out_dir.mkdir(parents=True, exist_ok=True)
+    out_json = dataset.out_dir / f'{result.approach_id}_results.json'
     out_json.write_text(json.dumps(result.to_json(), indent=2), encoding='utf-8')
     return out_json
