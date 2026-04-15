@@ -6,8 +6,8 @@ Each benchmark case lives in its own directory under `datasets/<dataset_id>/`.
 
 Each dataset directory should contain:
 - `dataset.json`
+- the source PDF
 - `ground_truth.json`
-- `ground_truth.template.json`
 - `README.md`
 
 ## `dataset.json`
@@ -39,10 +39,9 @@ Benchmark behavior:
 
 1. Create `datasets/<dataset_id>/`.
 2. Add `dataset.json` pointing at the PDF path in the repo.
-3. Copy or create `ground_truth.template.json` for rows `1` to `45`.
-4. Copy it to `ground_truth.json` and fill trusted answers as they become available.
-5. Add a short `README.md` with any sheet-specific notes.
-6. Run `python3 benchmark_all.py --dataset <dataset_id>` after ground truth is available.
+3. Create `ground_truth.json` for rows `1` to `45` and fill trusted answers as they become available.
+4. Add a short `README.md` with any sheet-specific notes.
+5. Run `python3 benchmark_all.py --dataset <dataset_id>` after ground truth is available.
 
 ## Prepared datasets in this repo
 
@@ -53,4 +52,4 @@ Benchmark behavior:
 - `2024_2-SOL_PER_modelo_A/`
 - `2026_1-SOL_PER_modelo_A/`
 
-`sample/ground_truth.json` is currently the only filled benchmark source as of 2026-04-14.
+Each dataset now stores its own PDF and `ground_truth.json` together in the same folder for easier review and maintenance.

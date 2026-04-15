@@ -1,7 +1,7 @@
 {
   "dataset_id": "2021_2P_PER_modelo_B_definitiva4",
   "pdf_filename": "2021_2P_PER_modelo_B_definitiva4.pdf",
-  "pdf_path": "datasets/2021_2P_PER_modelo_B_definitiva4.pdf",
+  "pdf_path": "datasets/2021_2P_PER_modelo_B_definitiva4/2021_2P_PER_modelo_B_definitiva4.pdf",
   "rows_used": 45,
   "allowed_values": [
     "A",

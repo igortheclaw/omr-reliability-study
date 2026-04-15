@@ -1,7 +1,7 @@
 {
   "dataset_id": "2022_3P_PER_modelo_A",
   "pdf_filename": "2022_3P_PER_modelo_A.pdf",
-  "pdf_path": "datasets/2022_3P_PER_modelo_A.pdf",
+  "pdf_path": "datasets/2022_3P_PER_modelo_A/2022_3P_PER_modelo_A.pdf",
   "rows_used": 45,
   "allowed_values": [
     "A",

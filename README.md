@@ -12,8 +12,8 @@ The code now uses dataset directories under `datasets/<dataset_id>/` as the prim
 
 Each dataset lives under `datasets/<dataset_id>/` and should contain:
 - `dataset.json` with the dataset id and PDF location
+- the source PDF for that dataset
 - `ground_truth.json` with trusted answers for benchmarked rows
-- `ground_truth.template.json` as a blank template
 - `README.md` with dataset-specific notes
 
 The benchmark reads:
@@ -64,9 +64,7 @@ python3 run_legacy_baseline.py --dataset sample
 
 ## Current benchmark status
 
-As of 2026-04-14, only `datasets/sample/ground_truth.json` contains non-null answers, so only `sample` is benchmarkable today.
-
-Current observed results on `sample`:
+The benchmark now reads ground truth directly from each dataset folder. Current observed results on `sample` are:
 
 | Approach | Exact | Wrong | NULL | Accuracy |
 | --- | ---: | ---: | ---: | ---: |
@@ -74,7 +72,7 @@ Current observed results on `sample`:
 | Approach 2 | 44/45 | 0 | 1 | 97.78% |
 | Approach 3 | 45/45 | 0 | 0 | 100.00% |
 
-Other prepared datasets are supported by the code and will be benchmarked automatically once their `ground_truth.json` files contain trusted non-null answers.
+Any dataset with non-null answers in `ground_truth.json` is benchmarked automatically.
 
 ## Repository structure
 

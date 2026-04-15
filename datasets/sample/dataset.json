@@ -1,7 +1,7 @@
 {
   "dataset_id": "sample",
   "pdf_filename": "sample.pdf",
-  "pdf_path": "sample.pdf",
+  "pdf_path": "datasets/sample/sample.pdf",
   "rows_used": 45,
   "allowed_values": [
     "A",
