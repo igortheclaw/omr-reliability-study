@@ -20,6 +20,15 @@ def _format_metric(value):
 def _summarize_results(results):
     summary = []
     for result in results:
+        if not hasattr(result, 'metrics'):
+            summary.append({
+                'approach_id': getattr(result, 'approach_id', 'unknown'),
+                'name': getattr(result, 'name', 'unknown'),
+                'summary': 'Approach failed during execution.',
+                'dataset_id': getattr(result, 'dataset_id', None),
+                'error': str(result),
+            })
+            continue
         metrics = result.metrics
         summary.append({
             'approach_id': result.approach_id,
@@ -42,9 +51,25 @@ def _summarize_results(results):
 
 def run_dataset(dataset):
     dataset.out_dir.mkdir(parents=True, exist_ok=True)
-    results = [fn(dataset) for fn in APPROACHES]
+    results = []
+    for fn in APPROACHES:
+        try:
+            results.append(fn(dataset))
+        except Exception as exc:
+            exc.approach_id = fn.__name__
+            exc.name = fn.__name__
+            exc.dataset_id = dataset.dataset_id
+            results.append(exc)
+        except BaseException as exc:
+            if not isinstance(exc, SystemExit):
+                raise
+            exc.approach_id = fn.__name__
+            exc.name = fn.__name__
+            exc.dataset_id = dataset.dataset_id
+            results.append(exc)
     summary = _summarize_results(results)
-    best = max(summary, key=lambda x: (x['accuracy'], x['accepted_precision'] or 0.0, x['accepted_coverage']))
+    successful = [item for item in summary if 'error' not in item]
+    best = max(successful, key=lambda x: (x['accuracy'], x['accepted_precision'] or 0.0, x['accepted_coverage'])) if successful else None
     payload = {
         'dataset_id': dataset.dataset_id,
         'pdf_path': str(dataset.pdf_path.relative_to(Path.cwd())),
@@ -58,6 +83,9 @@ def run_dataset(dataset):
 def _print_dataset_summary(payload):
     print(f"Dataset: {payload['dataset_id']}")
     for item in payload['approaches']:
+        if 'error' in item:
+            print(f"- {item['approach_id']}: ERROR {item['error']}")
+            continue
         print(
             f"- {item['approach_id']}: {item['exact_matches']}/{item['rows']} exact, "
             f"wrong={item['wrong']}, null={item['null']}, accuracy={item['accuracy']:.4f}, "
@@ -65,7 +93,10 @@ def _print_dataset_summary(payload):
             f"coverage={_format_metric(item['accepted_coverage'])}"
         )
     best = payload['best_observed']
-    print(f"Best observed approach: {best['approach_id']} ({best['accuracy']:.4f} exact accuracy)")
+    if best is not None:
+        print(f"Best observed approach: {best['approach_id']} ({best['accuracy']:.4f} exact accuracy)")
+    else:
+        print('Best observed approach: none (all approaches failed)')
     print('')
 
 

@@ -1,34 +1,2049 @@
 {
   "mode": "multi",
   "datasets_run": [
+    "2021_2P_PER_modelo_B_definitiva4",
+    "2022_3P_PER_modelo_A",
+    "2023_1P_PER_modelo_B",
+    "2024_2-SOL_PER_modelo_A",
+    "2026_1-SOL_PER_modelo_A",
     "sample"
   ],
-  "datasets_skipped": [
+  "datasets_skipped": [],
+  "dataset_summaries": [
     {
       "dataset_id": "2021_2P_PER_modelo_B_definitiva4",
-      "reason": "ground_truth.json has no non-null answers yet"
+      "pdf_path": "datasets/2021_2P_PER_modelo_B_definitiva4/2021_2P_PER_modelo_B_definitiva4.pdf",
+      "approaches": [
+        {
+          "approach_id": "approach_1_baseline",
+          "name": "Approach 1, manual calibration baseline",
+          "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+          "dataset_id": "2021_2P_PER_modelo_B_definitiva4",
+          "exact_matches": 23,
+          "wrong": 0,
+          "null": 15,
+          "rows": 38,
+          "total_rows": 45,
+          "labeled_rows": 38,
+          "accuracy": 0.6052631578947368,
+          "accepted_precision": 1.0,
+          "accepted_coverage": 0.6052631578947368,
+          "failures": [
+            {
+              "row": 26,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 27,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 29,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 30,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 31,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 32,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 34,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 37,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 38,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 39,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 40,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 41,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 45,
+              "truth": "B",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_2_template_registration",
+          "name": "Approach 2, fixed-template registration + intensity reading",
+          "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
+          "dataset_id": "2021_2P_PER_modelo_B_definitiva4",
+          "exact_matches": 23,
+          "wrong": 0,
+          "null": 15,
+          "rows": 38,
+          "total_rows": 45,
+          "labeled_rows": 38,
+          "accuracy": 0.6052631578947368,
+          "accepted_precision": 1.0,
+          "accepted_coverage": 0.6052631578947368,
+          "failures": [
+            {
+              "row": 26,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 27,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 29,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 30,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 31,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 32,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 34,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 37,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 38,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 39,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 40,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 41,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 45,
+              "truth": "B",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_3_timing_marks",
+          "name": "approach_3_timing_marks",
+          "summary": "Approach failed during execution.",
+          "dataset_id": "2021_2P_PER_modelo_B_definitiva4",
+          "error": "Expected enough timing marks, found 32"
+        }
+      ],
+      "best_observed": {
+        "approach_id": "approach_1_baseline",
+        "name": "Approach 1, manual calibration baseline",
+        "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+        "dataset_id": "2021_2P_PER_modelo_B_definitiva4",
+        "exact_matches": 23,
+        "wrong": 0,
+        "null": 15,
+        "rows": 38,
+        "total_rows": 45,
+        "labeled_rows": 38,
+        "accuracy": 0.6052631578947368,
+        "accepted_precision": 1.0,
+        "accepted_coverage": 0.6052631578947368,
+        "failures": [
+          {
+            "row": 26,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 27,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 28,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 29,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 30,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 31,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 32,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 34,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 35,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 37,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 38,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 39,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 40,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 41,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 45,
+            "truth": "B",
+            "pred": null
+          }
+        ]
+      }
     },
     {
       "dataset_id": "2022_3P_PER_modelo_A",
-      "reason": "ground_truth.json has no non-null answers yet"
+      "pdf_path": "datasets/2022_3P_PER_modelo_A/2022_3P_PER_modelo_A.pdf",
+      "approaches": [
+        {
+          "approach_id": "approach_1_baseline",
+          "name": "Approach 1, manual calibration baseline",
+          "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+          "dataset_id": "2022_3P_PER_modelo_A",
+          "exact_matches": 5,
+          "wrong": 19,
+          "null": 21,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.1111111111111111,
+          "accepted_precision": 0.20833333333333334,
+          "accepted_coverage": 0.5333333333333333,
+          "failures": [
+            {
+              "row": 4,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 5,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 6,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 7,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 8,
+              "truth": "B",
+              "pred": "D"
+            },
+            {
+              "row": 9,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 10,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 11,
+              "truth": "B",
+              "pred": "D"
+            },
+            {
+              "row": 13,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 14,
+              "truth": "B",
+              "pred": "C"
+            },
+            {
+              "row": 15,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 16,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 17,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 18,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 19,
+              "truth": "B",
+              "pred": "C"
+            },
+            {
+              "row": 20,
+              "truth": "C",
+              "pred": "A"
+            },
+            {
+              "row": 21,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 23,
+              "truth": "C",
+              "pred": "A"
+            },
+            {
+              "row": 24,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 25,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 26,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 27,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 29,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 30,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 31,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 32,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 33,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 34,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 35,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 36,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 37,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 38,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 39,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 40,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 41,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 42,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 43,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 44,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 45,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_2_template_registration",
+          "name": "Approach 2, fixed-template registration + intensity reading",
+          "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
+          "dataset_id": "2022_3P_PER_modelo_A",
+          "exact_matches": 5,
+          "wrong": 19,
+          "null": 21,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.1111111111111111,
+          "accepted_precision": 0.20833333333333334,
+          "accepted_coverage": 0.5333333333333333,
+          "failures": [
+            {
+              "row": 4,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 5,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 6,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 7,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 8,
+              "truth": "B",
+              "pred": "D"
+            },
+            {
+              "row": 9,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 10,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 11,
+              "truth": "B",
+              "pred": "D"
+            },
+            {
+              "row": 13,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 14,
+              "truth": "B",
+              "pred": "C"
+            },
+            {
+              "row": 15,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 16,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 17,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 18,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 19,
+              "truth": "B",
+              "pred": "C"
+            },
+            {
+              "row": 20,
+              "truth": "C",
+              "pred": "A"
+            },
+            {
+              "row": 21,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 23,
+              "truth": "C",
+              "pred": "A"
+            },
+            {
+              "row": 24,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 25,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 26,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 27,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 29,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 30,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 31,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 32,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 33,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 34,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 35,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 36,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 37,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 38,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 39,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 40,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 41,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 42,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 43,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 44,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 45,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_3_timing_marks",
+          "name": "approach_3_timing_marks",
+          "summary": "Approach failed during execution.",
+          "dataset_id": "2022_3P_PER_modelo_A",
+          "error": "Expected enough timing marks, found 40"
+        }
+      ],
+      "best_observed": {
+        "approach_id": "approach_1_baseline",
+        "name": "Approach 1, manual calibration baseline",
+        "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+        "dataset_id": "2022_3P_PER_modelo_A",
+        "exact_matches": 5,
+        "wrong": 19,
+        "null": 21,
+        "rows": 45,
+        "total_rows": 45,
+        "labeled_rows": 45,
+        "accuracy": 0.1111111111111111,
+        "accepted_precision": 0.20833333333333334,
+        "accepted_coverage": 0.5333333333333333,
+        "failures": [
+          {
+            "row": 4,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 5,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 6,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 7,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 8,
+            "truth": "B",
+            "pred": "D"
+          },
+          {
+            "row": 9,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 10,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 11,
+            "truth": "B",
+            "pred": "D"
+          },
+          {
+            "row": 13,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 14,
+            "truth": "B",
+            "pred": "C"
+          },
+          {
+            "row": 15,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 16,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 17,
+            "truth": "A",
+            "pred": "C"
+          },
+          {
+            "row": 18,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 19,
+            "truth": "B",
+            "pred": "C"
+          },
+          {
+            "row": 20,
+            "truth": "C",
+            "pred": "A"
+          },
+          {
+            "row": 21,
+            "truth": "A",
+            "pred": "C"
+          },
+          {
+            "row": 23,
+            "truth": "C",
+            "pred": "A"
+          },
+          {
+            "row": 24,
+            "truth": "A",
+            "pred": "C"
+          },
+          {
+            "row": 25,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 26,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 27,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 28,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 29,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 30,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 31,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 32,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 33,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 34,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 35,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 36,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 37,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 38,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 39,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 40,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 41,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 42,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 43,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 44,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 45,
+            "truth": "A",
+            "pred": null
+          }
+        ]
+      }
     },
     {
       "dataset_id": "2023_1P_PER_modelo_B",
-      "reason": "ground_truth.json has no non-null answers yet"
+      "pdf_path": "datasets/2023_1P_PER_modelo_B/2023_1P_PER_modelo_B.pdf",
+      "approaches": [
+        {
+          "approach_id": "approach_1_baseline",
+          "name": "Approach 1, manual calibration baseline",
+          "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+          "dataset_id": "2023_1P_PER_modelo_B",
+          "exact_matches": 1,
+          "wrong": 15,
+          "null": 29,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.022222222222222223,
+          "accepted_precision": 0.0625,
+          "accepted_coverage": 0.35555555555555557,
+          "failures": [
+            {
+              "row": 1,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 2,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 3,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 4,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 5,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 6,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 7,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 8,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 9,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 10,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 11,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 12,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 13,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 14,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 15,
+              "truth": "A",
+              "pred": "D"
+            },
+            {
+              "row": 16,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 17,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 18,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 19,
+              "truth": "C",
+              "pred": "D"
+            },
+            {
+              "row": 20,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 21,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 23,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 24,
+              "truth": "A",
+              "pred": "B"
+            },
+            {
+              "row": 25,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 26,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 27,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 29,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 30,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 31,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 32,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 33,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 34,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 36,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 37,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 38,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 39,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 40,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 41,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 42,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 43,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 44,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 45,
+              "truth": "D",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_2_template_registration",
+          "name": "Approach 2, fixed-template registration + intensity reading",
+          "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
+          "dataset_id": "2023_1P_PER_modelo_B",
+          "exact_matches": 1,
+          "wrong": 15,
+          "null": 29,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.022222222222222223,
+          "accepted_precision": 0.0625,
+          "accepted_coverage": 0.35555555555555557,
+          "failures": [
+            {
+              "row": 1,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 2,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 3,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 4,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 5,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 6,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 7,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 8,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 9,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 10,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 11,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 12,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 13,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 14,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 15,
+              "truth": "A",
+              "pred": "D"
+            },
+            {
+              "row": 16,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 17,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 18,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 19,
+              "truth": "C",
+              "pred": "D"
+            },
+            {
+              "row": 20,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 21,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 23,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 24,
+              "truth": "A",
+              "pred": "B"
+            },
+            {
+              "row": 25,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 26,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 27,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 29,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 30,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 31,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 32,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 33,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 34,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 36,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 37,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 38,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 39,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 40,
+              "truth": "D",
+              "pred": null
+            },
+            {
+              "row": 41,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 42,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 43,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 44,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 45,
+              "truth": "D",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_3_timing_marks",
+          "name": "approach_3_timing_marks",
+          "summary": "Approach failed during execution.",
+          "dataset_id": "2023_1P_PER_modelo_B",
+          "error": "Expected enough timing marks, found 39"
+        }
+      ],
+      "best_observed": {
+        "approach_id": "approach_1_baseline",
+        "name": "Approach 1, manual calibration baseline",
+        "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+        "dataset_id": "2023_1P_PER_modelo_B",
+        "exact_matches": 1,
+        "wrong": 15,
+        "null": 29,
+        "rows": 45,
+        "total_rows": 45,
+        "labeled_rows": 45,
+        "accuracy": 0.022222222222222223,
+        "accepted_precision": 0.0625,
+        "accepted_coverage": 0.35555555555555557,
+        "failures": [
+          {
+            "row": 1,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 2,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 3,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 4,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 5,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 6,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 7,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 8,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 9,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 10,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 11,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 12,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 13,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 14,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 15,
+            "truth": "A",
+            "pred": "D"
+          },
+          {
+            "row": 16,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 17,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 18,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 19,
+            "truth": "C",
+            "pred": "D"
+          },
+          {
+            "row": 20,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 21,
+            "truth": "A",
+            "pred": "C"
+          },
+          {
+            "row": 23,
+            "truth": "C",
+            "pred": null
+          },
+          {
+            "row": 24,
+            "truth": "A",
+            "pred": "B"
+          },
+          {
+            "row": 25,
+            "truth": "B",
+            "pred": null
+          },
+          {
+            "row": 26,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 27,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 28,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 29,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 30,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 31,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 32,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 33,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 34,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 35,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 36,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 37,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 38,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 39,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 40,
+            "truth": "D",
+            "pred": null
+          },
+          {
+            "row": 41,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 42,
+            "truth": "B",
+            "pred": "A"
+          },
+          {
+            "row": 43,
+            "truth": "C",
+            "pred": "B"
+          },
+          {
+            "row": 44,
+            "truth": "A",
+            "pred": null
+          },
+          {
+            "row": 45,
+            "truth": "D",
+            "pred": null
+          }
+        ]
+      }
     },
     {
       "dataset_id": "2024_2-SOL_PER_modelo_A",
-      "reason": "ground_truth.json has no non-null answers yet"
+      "pdf_path": "datasets/2024_2-SOL_PER_modelo_A/2024_2-SOL_PER_modelo_A.pdf",
+      "approaches": [
+        {
+          "approach_id": "approach_1_baseline",
+          "name": "Approach 1, manual calibration baseline",
+          "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+          "dataset_id": "2024_2-SOL_PER_modelo_A",
+          "exact_matches": 38,
+          "wrong": 1,
+          "null": 6,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.8444444444444444,
+          "accepted_precision": 0.9743589743589743,
+          "accepted_coverage": 0.8666666666666667,
+          "failures": [
+            {
+              "row": 26,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "B",
+              "pred": "C"
+            },
+            {
+              "row": 29,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 30,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 31,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 33,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_2_template_registration",
+          "name": "Approach 2, fixed-template registration + intensity reading",
+          "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
+          "dataset_id": "2024_2-SOL_PER_modelo_A",
+          "exact_matches": 38,
+          "wrong": 1,
+          "null": 6,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.8444444444444444,
+          "accepted_precision": 0.9743589743589743,
+          "accepted_coverage": 0.8666666666666667,
+          "failures": [
+            {
+              "row": 26,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 28,
+              "truth": "B",
+              "pred": "C"
+            },
+            {
+              "row": 29,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 30,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 31,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 33,
+              "truth": "B",
+              "pred": null
+            },
+            {
+              "row": 35,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_3_timing_marks",
+          "name": "Approach 3, timing-mark anchored registration",
+          "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
+          "dataset_id": "2024_2-SOL_PER_modelo_A",
+          "exact_matches": 45,
+          "wrong": 0,
+          "null": 0,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 1.0,
+          "accepted_precision": 1.0,
+          "accepted_coverage": 1.0,
+          "failures": []
+        }
+      ],
+      "best_observed": {
+        "approach_id": "approach_3_timing_marks",
+        "name": "Approach 3, timing-mark anchored registration",
+        "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
+        "dataset_id": "2024_2-SOL_PER_modelo_A",
+        "exact_matches": 45,
+        "wrong": 0,
+        "null": 0,
+        "rows": 45,
+        "total_rows": 45,
+        "labeled_rows": 45,
+        "accuracy": 1.0,
+        "accepted_precision": 1.0,
+        "accepted_coverage": 1.0,
+        "failures": []
+      }
     },
     {
       "dataset_id": "2026_1-SOL_PER_modelo_A",
-      "reason": "ground_truth.json has no non-null answers yet"
-    }
-  ],
-  "dataset_summaries": [
+      "pdf_path": "datasets/2026_1-SOL_PER_modelo_A/2026_1-SOL_PER_modelo_A.pdf",
+      "approaches": [
+        {
+          "approach_id": "approach_1_baseline",
+          "name": "Approach 1, manual calibration baseline",
+          "summary": "Fixed coordinates from manual calibration, direct darkness readout, NULL on low margin.",
+          "dataset_id": "2026_1-SOL_PER_modelo_A",
+          "exact_matches": 31,
+          "wrong": 10,
+          "null": 4,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.6888888888888889,
+          "accepted_precision": 0.7560975609756098,
+          "accepted_coverage": 0.9111111111111111,
+          "failures": [
+            {
+              "row": 9,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 11,
+              "truth": "D",
+              "pred": "A"
+            },
+            {
+              "row": 12,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 13,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 15,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 16,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 17,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 19,
+              "truth": "D",
+              "pred": "C"
+            },
+            {
+              "row": 20,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 21,
+              "truth": "B",
+              "pred": "D"
+            },
+            {
+              "row": 22,
+              "truth": "D",
+              "pred": "C"
+            },
+            {
+              "row": 23,
+              "truth": "C",
+              "pred": "D"
+            },
+            {
+              "row": 24,
+              "truth": "D",
+              "pred": "A"
+            },
+            {
+              "row": 25,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_2_template_registration",
+          "name": "Approach 2, fixed-template registration + intensity reading",
+          "summary": "Affine ECC registration to a canonical template, then read the canonical bubble grid.",
+          "dataset_id": "2026_1-SOL_PER_modelo_A",
+          "exact_matches": 31,
+          "wrong": 10,
+          "null": 4,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 0.6888888888888889,
+          "accepted_precision": 0.7560975609756098,
+          "accepted_coverage": 0.9111111111111111,
+          "failures": [
+            {
+              "row": 9,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 11,
+              "truth": "D",
+              "pred": "A"
+            },
+            {
+              "row": 12,
+              "truth": "A",
+              "pred": null
+            },
+            {
+              "row": 13,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 15,
+              "truth": "B",
+              "pred": "A"
+            },
+            {
+              "row": 16,
+              "truth": "A",
+              "pred": "C"
+            },
+            {
+              "row": 17,
+              "truth": "C",
+              "pred": null
+            },
+            {
+              "row": 19,
+              "truth": "D",
+              "pred": "C"
+            },
+            {
+              "row": 20,
+              "truth": "C",
+              "pred": "B"
+            },
+            {
+              "row": 21,
+              "truth": "B",
+              "pred": "D"
+            },
+            {
+              "row": 22,
+              "truth": "D",
+              "pred": "C"
+            },
+            {
+              "row": 23,
+              "truth": "C",
+              "pred": "D"
+            },
+            {
+              "row": 24,
+              "truth": "D",
+              "pred": "A"
+            },
+            {
+              "row": 25,
+              "truth": "A",
+              "pred": null
+            }
+          ]
+        },
+        {
+          "approach_id": "approach_3_timing_marks",
+          "name": "Approach 3, timing-mark anchored registration",
+          "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
+          "dataset_id": "2026_1-SOL_PER_modelo_A",
+          "exact_matches": 45,
+          "wrong": 0,
+          "null": 0,
+          "rows": 45,
+          "total_rows": 45,
+          "labeled_rows": 45,
+          "accuracy": 1.0,
+          "accepted_precision": 1.0,
+          "accepted_coverage": 1.0,
+          "failures": []
+        }
+      ],
+      "best_observed": {
+        "approach_id": "approach_3_timing_marks",
+        "name": "Approach 3, timing-mark anchored registration",
+        "summary": "Use detected right-edge timing marks to set each row Y position, then read fixed answer columns.",
+        "dataset_id": "2026_1-SOL_PER_modelo_A",
+        "exact_matches": 45,
+        "wrong": 0,
+        "null": 0,
+        "rows": 45,
+        "total_rows": 45,
+        "labeled_rows": 45,
+        "accuracy": 1.0,
+        "accepted_precision": 1.0,
+        "accepted_coverage": 1.0,
+        "failures": []
+      }
+    },
     {
       "dataset_id": "sample",
-      "pdf_path": "sample.pdf",
+      "pdf_path": "datasets/sample/sample.pdf",
       "approaches": [
         {
           "approach_id": "approach_1_baseline",

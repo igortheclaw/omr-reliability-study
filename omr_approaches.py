@@ -21,9 +21,12 @@ from omr_core import (
 CANONICAL_LEFT = np.array([[315, 1387], [430, 1387], [315, 2203]], dtype=np.float32)
 CANONICAL_RIGHT = np.array([[650, 1374], [762, 1374], [650, 2020]], dtype=np.float32)
 CANONICAL_ALL = np.vstack([CANONICAL_LEFT, CANONICAL_RIGHT])
-TIMING_MARK_X_MIN = 1605
+TIMING_MARK_X_MIN = 1575
 TIMING_MARK_AREA_MIN = 500
 FIRST_VISIBLE_MARK_INDEX = 16
+TIMING_MARK_Y_GAP_MAX = 45
+TIMING_MARK_CHAIN_MIN = 25
+TIMING_MARK_TOTAL_MIN = FIRST_VISIBLE_MARK_INDEX + 25
 
 
 def _resolve_dataset(dataset: DatasetConfig | None) -> DatasetConfig:
@@ -120,6 +123,23 @@ def _detect_timing_marks(gray):
         if x >= TIMING_MARK_X_MIN and area >= TIMING_MARK_AREA_MIN and w >= 35 and h >= 15:
             marks.append({'x': float(x + w / 2), 'y': float(y + h / 2), 'w': int(w), 'h': int(h), 'area': int(area)})
     marks.sort(key=lambda m: m['y'])
+    if not marks:
+        return marks
+
+    chains = []
+    chain = [marks[0]]
+    for mark in marks[1:]:
+        gap = mark['y'] - chain[-1]['y']
+        if gap <= TIMING_MARK_Y_GAP_MAX:
+            chain.append(mark)
+        else:
+            chains.append(chain)
+            chain = [mark]
+    chains.append(chain)
+
+    best_chain = max(chains, key=len)
+    if len(best_chain) >= TIMING_MARK_TOTAL_MIN:
+        return best_chain
     return marks
 
 
