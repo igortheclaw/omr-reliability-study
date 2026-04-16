@@ -25,8 +25,14 @@ TIMING_MARK_X_MIN = 1575
 TIMING_MARK_AREA_MIN = 500
 FIRST_VISIBLE_MARK_INDEX = 16
 TIMING_MARK_Y_GAP_MAX = 45
-TIMING_MARK_CHAIN_MIN = 25
 TIMING_MARK_TOTAL_MIN = FIRST_VISIBLE_MARK_INDEX + 25
+RIGHT_EDGE_HYBRID_X_MIN = 1590
+RIGHT_EDGE_HYBRID_AREA_MIN = 500
+RIGHT_EDGE_HYBRID_W_MIN = 30
+RIGHT_EDGE_HYBRID_H_MIN = 15
+RIGHT_EDGE_CANONICAL_X = 1633.0
+HYBRID_RADIUS = 13
+HYBRID_NULL_MARGIN = 7.0
 
 
 def _resolve_dataset(dataset: DatasetConfig | None) -> DatasetConfig:
@@ -182,8 +188,82 @@ def approach_3_timing_marks(dataset: DatasetConfig | None = None):
     return result
 
 
+def _detect_right_edge_hybrid_chain(gray):
+    _, th = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY_INV)
+    num, _, stats, centroids = cv2.connectedComponentsWithStats(th, 8)
+    marks = []
+    for i in range(1, num):
+        x, y, w, h, area = stats[i]
+        cx, cy = centroids[i]
+        if cx > RIGHT_EDGE_HYBRID_X_MIN and area > RIGHT_EDGE_HYBRID_AREA_MIN and w >= RIGHT_EDGE_HYBRID_W_MIN and h >= RIGHT_EDGE_HYBRID_H_MIN:
+            marks.append({'x': float(cx), 'y': float(cy), 'w': int(w), 'h': int(h), 'area': int(area)})
+    marks.sort(key=lambda m: m['y'])
+    if not marks:
+        raise SystemExit('No right-edge timing marks detected')
+
+    chains = []
+    chain = [marks[0]]
+    for mark in marks[1:]:
+        if mark['y'] - chain[-1]['y'] <= TIMING_MARK_Y_GAP_MAX:
+            chain.append(mark)
+        else:
+            chains.append(chain)
+            chain = [mark]
+    chains.append(chain)
+    return max(chains, key=len)
+
+
+def approach_4_right_edge_extrapolated_hybrid(dataset: DatasetConfig | None = None):
+    dataset = _resolve_dataset(dataset)
+    gray, rgb = load_page(dataset)
+    chain = _detect_right_edge_hybrid_chain(gray)
+    if len(chain) < 9:
+        raise SystemExit(f'Expected at least 9 right-edge marks, found {len(chain)}')
+
+    ys = [m['y'] for m in chain]
+    xs = [m['x'] for m in chain]
+    dy = float(np.median(np.diff(ys)))
+    y_last = float(ys[-1])
+    dx = float(np.median(xs) - RIGHT_EDGE_CANONICAL_X)
+
+    def geometry(group, row):
+        local_row = row if row <= 25 else row - 25
+        y = y_last - (25 - local_row) * dy
+        shifted = {label: float(x + dx) for label, x in group['xs'].items()}
+        return y, shifted
+
+    answers, debug = run_circle_sampler(gray, geometry, null_margin=HYBRID_NULL_MARGIN, radius=HYBRID_RADIUS)
+    metrics = evaluate_answers(
+        dataset,
+        answers,
+        debug,
+        extra_metrics={
+            'null_margin': HYBRID_NULL_MARGIN,
+            'radius': HYBRID_RADIUS,
+            'detected_right_edge_marks': len(chain),
+            'right_edge_chain_preview': chain[:5],
+            'dy': dy,
+            'dx': dx,
+            'y_last': y_last,
+        },
+    )
+    result = ApproachResult(
+        approach_id='approach_4_right_edge_extrapolated_hybrid',
+        name='Approach 4, right-edge extrapolated hybrid',
+        summary='Use the longest detected right-edge chain, anchor from the last visible mark, extrapolate row Y positions upward, and apply a global horizontal shift before reading bubbles.',
+        dataset_id=dataset.dataset_id,
+        answers=answers,
+        debug=debug,
+        metrics=metrics,
+    )
+    render_overlay(rgb, debug, dataset.out_dir / 'approach_4_right_edge_extrapolated_hybrid_overlay.png')
+    save_result(dataset, result)
+    return result
+
+
 APPROACHES = [
     approach_1_baseline,
     approach_2_template_registration,
     approach_3_timing_marks,
+    approach_4_right_edge_extrapolated_hybrid,
 ]
